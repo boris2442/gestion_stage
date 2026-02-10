@@ -1,0 +1,20 @@
+/gestion_stagiaires
+│
+├── /config
+│   └── db.php             <-- Connexion MySQL
+├── /includes
+│   ├── header.php         <-- Bootstrap, Nav (différent selon le rôle), Session_start
+│   ├── footer.php         <-- Scripts JS / jQuery
+│   └── functions.php      <-- Tes fonctions utiles (ex: formatage de date)
+├── /uploads               <-- Dossier pour les CV [cite: 102, 115] et rapports [cite: 145]
+│
+├── index.php              <-- Connexion (Login) [cite: 21, 53]
+├── postuler.php           <-- Formulaire public pour les internautes [cite: 33, 34]
+├── logout.php             <-- Pour fermer la session
+│
+├── dashboard.php          <-- Stats pour Admin [cite: 23] / Tâches pour Stagiaire [cite: 31]
+├── demandes_gestion.php   <-- Liste, validation ou rejet des demandes [cite: 64, 86]
+├── stagiaires_list.php    <-- Liste des stagiaires actifs et affectation [cite: 47, 61]
+├── taches.php             <-- La To-do list (CRUD tâches) [cite: 58, 121]
+├── evaluation.php         <-- Notation du rapport par l'encadreur [cite: 22, 40]
+└── generate_pdf.php       <-- Génération de l'attestation (FPDF/DomPDF) [cite: 13, 24]

@@ -1,0 +1,54 @@
+.sidebar {
+  border-right: 1px solid #dee2e6;
+  z-index: 100;
+}
+
+.sidebar .nav-link {
+  font-weight: 500;
+  color: #333;
+  padding: 10px 20px;
+}
+
+.sidebar .nav-link:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+}
+
+.sidebar .nav-link.active {
+  color: #007bff;
+  background-color: #e9ecef;
+}
+
+/* Style pour la Sidebar professionnelle */
+#sidebar {
+  min-height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #dee2e6;
+}
+
+#sidebar .nav-link {
+  color: #333;
+  padding: 12px 20px;
+  border-radius: 0;
+  transition: all 0.3s;
+}
+
+#sidebar .nav-link:hover {
+  background-color: #f8f9fa;
+  color: #0d6efd;
+}
+
+#sidebar .nav-link.active {
+  background-color: #e7f1ff;
+  color: #0d6efd;
+  font-weight: bold;
+}
+
+/* Style général */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main-content {
+  padding: 20px;
+}

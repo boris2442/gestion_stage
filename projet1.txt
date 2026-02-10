@@ -1,0 +1,63 @@
+Phase 1 : Le Socle (Base de données et Configuration)
+Avant de coder une seule page, tu dois préparer le terrain.
+
+
+Module de Base de Données : Création des tables (users, demandes, sessions, taches) en suivant scrupuleusement le diagramme de classes.
+
+Module de Connexion (db.php) : Établir la liaison entre PHP et MySQL.
+
+Layout de base : Créer le header.php et footer.php avec Bootstrap pour que toutes les pages suivantes soient déjà "propres" visuellement.
+
+Phase 2 : Module d'Authentification (Sécurité)
+C'est la porte d'entrée obligatoire citée dans tes diagrammes.
++1
+
+
+Connexion : Formulaire pour que l'Administrateur, l'Encadreur et le Stagiaire accèdent à leur espace.
++2
+
+Gestion des Sessions : Sécuriser les pages pour qu'un stagiaire ne puisse pas accéder à la liste des utilisateurs de l'admin.
+
+Déconnexion : Fermeture propre de la session.
+
+Phase 3 : Module de Candidature (Portail Public)
+C'est ici que les données entrent dans le système pour la première fois.
+
+
+Formulaire postuler.php : Permettre à l'Internaute de saisir ses infos (Nom, Email, CV, Lettre de motivation).
+
+Upload de fichiers : Gérer l'enregistrement des CV et lettres dans le dossier /uploads/ sur le serveur.
+
+Phase 4 : Module d'Administration (Gestion et Validation)
+Une fois que l'internaute a postulé, l'admin doit agir.
++1
+
+
+Gestion des demandes : Liste des postulants avec option "Valider" ou "Rejeter".
++1
+
+Conversion Automatique : Lors de la validation, le système crée automatiquement un compte dans la table users pour le nouveau stagiaire.
+
+
+Affectation : L'admin définit quel stagiaire travaille avec quel encadreur.
++2
+
+Phase 5 : Module Suivi et Tâches (Le cœur du stage)
+C'est la partie interactive quotidienne entre l'encadreur et le stagiaire.
+
+
+La To-Do List : L'encadreur crée des tâches, et le stagiaire les marque comme "Terminées".
+
+
+Dépôt de Rapport : Le stagiaire télécharge son rapport final sur la plateforme.
++1
+
+Phase 6 : Module Évaluation et PDF (Clôture)
+Le projet se termine par les résultats officiels.
+
+
+Formulaire de Notation : L'encadreur note le travail et le rapport du stagiaire.
+
+
+Génération d'Attestation : Un bouton permet de générer automatiquement un PDF propre avec le logo de l'entreprise.
++1
