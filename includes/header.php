@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -83,6 +80,9 @@
                         <li class="nav-item"><span class="nav-link text-white-50 me-3">Salut, <?php echo $_SESSION['nom'] ?? 'Utilisateur'; ?></span></li>
 
 
+                        <li class="nav-item"><a class="dropdown-item" href="editer_profil.php">
+                                <i class="fas fa-user-edit me-2"></i>Mon Profil
+                            </a></li>
                         <li class="nav-item"><a class="btn btn-light btn-sm fw-bold me-2" href="dashboard.php">Dashboard</a></li>
                         <li class="nav-item"><a class="btn btn-danger btn-sm fw-bold" href="logout.php"><i class="fas fa-sign-out-alt"></i> Quitter</a></li>
                     <?php endif; ?>
@@ -137,13 +137,13 @@
                             </a>
                         </li>
 
-                     
-                            <li class="nav-item">
-                                <a class="nav-link" href="users.php">
-                                    <i class="fas fa-users-cog me-2"></i> Utilisateurs
-                                </a>
-                            </li>
-          
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="users.php">
+                                <i class="fas fa-users-cog me-2"></i> Utilisateurs
+                            </a>
+                        </li>
+
 
 
 

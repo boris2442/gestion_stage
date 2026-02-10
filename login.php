@@ -35,6 +35,10 @@ include 'includes/header.php';
 ?>
 
 <div class="container">
+
+    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'account_deleted'): ?>
+        <div class="alert alert-info">Votre compte a été supprimé avec succès.</div>
+    <?php endif; ?>
     <div class="row justify-content-center mt-5">
         <div class="col-md-4">
             <div class="card shadow">
