@@ -96,3 +96,43 @@ Gérer les comptes : L'administrateur doit pouvoir créer/modifier des comptes (
 Gérer des sessions de stage : C'est une fonction d'administration importante pour définir les périodes de stage (ex: Session Été 2026).
 
 Télécharger des attestations : Dans ton UML, l'Admin peut générer des attestations. C'est une fonctionnalité très appréciée pour un portfolio (souvent faite avec une bibliothèque comme DomPDF en PHP).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. Ce qu'il reste à gérer (À faire 🛠️)
+Pour que ton projet soit complet selon ton propre diagramme, tu dois encore créer les pages pour ces fonctionnalités :
+
+Pour l'Administrateur :
+Gérer des comptes : Une page pour créer/modifier/supprimer les comptes Stagiaires, Encadreurs et Administrateurs.
+
+Valider des demandes de stages : Une interface pour accepter ou refuser les postulants.
+
+Gérer des sessions de stage : Définir les dates de début et de fin pour chaque stagiaire.
+
+Pour le Stagiaire :
+Travail sur des tâches : Un espace où le stagiaire voit ses tâches et peut changer leur statut (en cours / terminé).
+
+Télécharger un rapport / Attestation : Un système d'envoi et de réception de fichiers.
+
+Pour l'Encadreur :
+Créer des projets et des tâches : L'encadreur doit pouvoir assigner du travail aux stagiaires.
+
+3. La priorité immédiate : "Mise à jour de son profil"
+Sur ton diagramme, tous les acteurs peuvent mettre à jour leur profil.
+
+Conseil d'expert : Actuellement, si "Simo" clique sur son nom dans la barre bleue, rien ne se passe. Tu devrais créer une page profil.php pour permettre de changer le mot de passe ou l'email.
+
+4. Rappel sur ton erreur de logique actuelle
+N'oublie pas de corriger ton fichier login.php comme discuté. Ton interface montre que tu es sur login.php alors que tu es déjà connecté. Selon ton UML, une fois l'authentification réussie, l'utilisateur doit être redirigé vers son espace dédié (Dashboard) pour accéder à ses fonctions.

@@ -1,6 +1,4 @@
-<?php
-session_start();
-?>
+
 
 
 <!DOCTYPE html>
@@ -138,6 +136,18 @@ session_start();
                                 <i class="fas fa-users me-2"></i> Stagiaires
                             </a>
                         </li>
+
+                     
+                            <li class="nav-item">
+                                <a class="nav-link" href="users.php">
+                                    <i class="fas fa-users-cog me-2"></i> Utilisateurs
+                                </a>
+                            </li>
+          
+
+
+
+
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">
                                 <i class="fas fa-sign-out-alt me-2"></i> Déconnexion

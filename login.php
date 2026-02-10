@@ -1,7 +1,10 @@
 <?php
 session_start();
+if (isset($_SESSION['user_id'])) {
+    header('Location: dashboard.php');
+    exit();
+}
 require_once 'config/db.php';
-
 // 1. TRAITEMENT DU FORMULAIRE (Si on a cliqué sur Connexion)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
