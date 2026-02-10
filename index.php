@@ -1,6 +1,22 @@
 <?php include 'includes/header.php'; ?>
 
 <section class="bg-gradient-primary text-white py-5 shadow-lg position-relative overflow-hidden" style="background: linear-gradient(135deg, #0d6efd 0%, #00bfff 100%);">
+
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show mx-4 mt-3" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <?php
+            if ($_GET['error'] == 1) echo "Identifiants incorrects ou compte inexistant.";
+            else echo "Une erreur est survenue lors de la connexion.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+
+
+
     <div class="container py-5">
         <div class="row align-items-center g-5">
             <div class="col-lg-7 animate__animated animate__fadeInLeft">

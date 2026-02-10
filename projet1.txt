@@ -61,3 +61,38 @@ Formulaire de Notation : L'encadreur note le travail et le rapport du stagiaire.
 
 Génération d'Attestation : Un bouton permet de générer automatiquement un PDF propre avec le logo de l'entreprise.
 +1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Mise à jour du profil : Ton diagramme montre que le stagiaire peut mettre à jour son profil. Il faudrait ajouter un lien "Mon Profil" dans le sidebar.
+
+Gérer les comptes : L'administrateur doit pouvoir créer/modifier des comptes (stagiaires, encadreurs, admins). As-tu une page utilisateurs_gestion.php ?
+
+Gérer des sessions de stage : C'est une fonction d'administration importante pour définir les périodes de stage (ex: Session Été 2026).
+
+Télécharger des attestations : Dans ton UML, l'Admin peut générer des attestations. C'est une fonctionnalité très appréciée pour un portfolio (souvent faite avec une bibliothèque comme DomPDF en PHP).

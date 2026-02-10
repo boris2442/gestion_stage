@@ -27,13 +27,13 @@
                             <label class="form-label">Mot de passe</label>
                             <input type="password" name="password" class="form-control" required>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label class="form-label">Rôle</label>
                             <select name="role" class="form-select">
                                 <option value="stagiaire">Stagiaire</option>
                                 <option value="encadreur">Encadreur</option>
                             </select>
-                        </div>
+                        </div> -->
                         <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">S'inscrire</button>
                     </form>
                 </div>

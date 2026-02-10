@@ -11,16 +11,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
-        // Authentification réussie
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['nom'] = $user['nom'];
         $_SESSION['role'] = $user['role'];
 
+        // ✅ Message de succès
+        $_SESSION['success'] = "Connexion réussie 🎉 Bienvenue " . $user['nom'];
+
         header('Location: dashboard.php');
-        exit();
-    } else {
-        // Échec
-        header('Location: index.php?error=1');
         exit();
     }
 }
