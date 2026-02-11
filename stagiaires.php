@@ -24,7 +24,7 @@ $current_session = $stmt_active->fetch();
 // 2. Filtrage (si on clique sur une autre session, on pourrait passer un ID en GET)
 $session_id = $_GET['session_id'] ?? ($current_session['id'] ?? null);
 
-$sql = "SELECT s.*, e.nom AS nom_encadreur, e.prenom AS prenom_encadreur, sess.nom_session 
+$sql = "SELECT s.*, e.nom AS nom_encadreur, e.prenom AS prenom_encadreur, sess.titre 
         FROM users s 
         LEFT JOIN users e ON s.encadreur_id = e.id 
         LEFT JOIN sessions sess ON s.id_session_actuelle = sess.id
@@ -53,7 +53,7 @@ $stagiaires = $stmt->fetchAll();
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item active">
                     <i class="fas fa-calendar-alt me-1"></i>
-                    Session : <?= $current_session ? htmlspecialchars($current_session['nom_session']) : 'Toutes les sessions' ?>
+                    Session : <?= $current_session ? htmlspecialchars($current_session['titre']) : 'Toutes les sessions' ?>
                 </li>
             </ol>
         </nav>

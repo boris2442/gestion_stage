@@ -34,12 +34,17 @@ include 'includes/header.php'; ?>
                     <a href="postuler.php" class="btn btn-warning btn-lg px-4 me-md-2 shadow-lg text-dark fw-bold border-0">
                         <i class="fas fa-paper-plane me-2"></i>Postuler
                     </a>
-                    <a href="login.php" class="btn btn-primary btn-lg px-4 me-md-2 shadow-lg fw-bold border-0">
-                        <i class="fas fa-sign-in-alt me-2"></i>Connexion
-                    </a>
-                    <a href="register.php" class="btn btn-outline-light btn-lg px-4 shadow-sm border-2">
-                        <i class="fas fa-user-plus me-2"></i>S'inscrire
-                    </a>
+                    <?php if (empty($_SESSION['user_id'])): ?>
+                        <a href="login.php" class="btn btn-primary btn-lg px-4 me-md-2 shadow-lg fw-bold border-0">
+                            <i class="fas fa-sign-in-alt me-2"></i>Connexion
+                        </a>
+                        <a href="register.php" class="btn btn-outline-light btn-lg px-4 shadow-sm border-2">
+                            <i class="fas fa-user-plus me-2"></i>S'inscrire
+                        </a>
+                    <?php
+                    endif;
+                    ?>
+
                 </div>
             </div>
             <div class="col-lg-5 text-center d-none d-lg-block animate__animated animate__fadeInRight">

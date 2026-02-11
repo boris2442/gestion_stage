@@ -21,17 +21,6 @@ $mes_stagiaires = $stmt->fetchAll();
 
 
 
-// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//     $id_s = $_POST['id_stagiaire'];
-//     $titre = htmlspecialchars($_POST['titre']);
-//     $desc = htmlspecialchars($_POST['description']);
-
-//     $sql = "INSERT INTO taches (id_stagiaire, titre, description, status) VALUES (?, ?, ?, 'a_faire')";
-//     if ($pdo->prepare($sql)->execute([$id_s, $titre, $desc])) {
-//         echo "<script>alert('Tâche assignée !');</script>";
-//     }
-// }
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_s = $_POST['id_stagiaire'];

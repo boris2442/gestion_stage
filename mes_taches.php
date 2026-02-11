@@ -42,7 +42,7 @@ $liste_taches = $taches_stmt->fetchAll();
                 <h6 class="alert-heading fw-bold mb-1"><i class="fas fa-certificate me-2"></i> Rapport Validé !</h6>
                 <p class="mb-0 small">Félicitations, vous avez terminé votre stage avec succès.</p>
             </div>
-            <a href="generer_attestation.php" class="btn btn-dark btn-sm fw-bold">
+            <a href="attestation.php" class="btn btn-dark btn-sm fw-bold">
                 <i class="fas fa-file-pdf me-2"></i> Mon Attestation
             </a>
         </div>
