@@ -9,8 +9,20 @@ if ($_SESSION['role'] !== 'administrateur') {
 }
 
 // 1. Récupérer tous les encadreurs
-$stmt = $pdo->query("SELECT id, nom, prenom, email FROM users WHERE role = 'encadreur' ORDER BY nom ASC");
-$encadreurs = $stmt->fetchAll();
+// $stmt = $pdo->query("SELECT id, nom, prenom, email FROM users WHERE role = 'encadreur' ORDER BY nom ASC");
+// $encadreurs = $stmt->fetchAll();
+
+
+$stmt_s = $pdo->prepare("
+    SELECT u.nom, u.prenom, u.niveau_etude 
+    FROM users u
+    JOIN sessions s ON u.id_session_actuelle = s.id
+    WHERE u.encadreur_id = ? 
+    AND u.role = 'stagiaire' 
+    AND s.is_active = 1
+");
+$stmt_s->execute([$e['id']]);
+$mes_stagiaires = $stmt_s->fetchAll();
 include 'includes/header.php';
 ?>
 
@@ -67,8 +79,12 @@ include 'includes/header.php';
                         <?php endif; ?>
                     </div>
 
-                    <div class="card-footer bg-light border-0 text-center">
-                        <small class="fw-bold text-primary"><?= count($mes_stagiaires) ?> Stagiaire(s)</small>
+                    <div class="card-footer bg-light border-0 d-flex justify-content-between align-items-center">
+                        <?php $nb = count($mes_stagiaires); ?>
+                        <small class="text-muted">Capacité d'encadrement</small>
+                        <span class="badge <?= $nb > 5 ? 'bg-warning' : 'bg-primary' ?> shadow-sm">
+                            <?= $nb ?> Stagiaire(s)
+                        </span>
                     </div>
                 </div>
             </div>
