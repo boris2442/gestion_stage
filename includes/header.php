@@ -167,6 +167,12 @@
                                 <span>Vue d'ensemble</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gestion_taches_admin.php">
+                                <i class="fas fa-tasks me-2"></i>
+                                <span>Taches</span>
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">
