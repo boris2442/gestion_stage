@@ -211,15 +211,18 @@ include 'includes/header.php';
 
     // Graphique d'Assignation
     // Graphique d'Assignation
+    // Graphique d'Assignation
     const ctx2 = document.getElementById('assignationChart').getContext('2d');
+    const totalStagiaires = <?= (int)$total_stagiaires ?>;
+
     new Chart(ctx2, {
         type: 'doughnut',
         data: {
-            labels: ['Assignés', 'Non-Assignés'],
+            labels: totalStagiaires > 0 ? ['Assignés', 'Non-Assignés'] : ['Aucun stagiaire'],
             datasets: [{
-                // Correction ici : remplacez $total_na par $non_assignes
-                data: [<?= (int)$assignes ?>, <?= (int)$non_assignes ?>],
-                backgroundColor: ['#198754', '#dc3545'],
+                // Si le total est 0, on met 1 dans une donnée "grise" pour afficher le cercle
+                data: totalStagiaires > 0 ? [<?= (int)$assignes ?>, <?= (int)$non_assignes ?>] : [1],
+                backgroundColor: totalStagiaires > 0 ? ['#198754', '#dc3545'] : ['#e9ecef'], // Gris clair si vide
                 hoverOffset: 4
             }]
         },
@@ -227,6 +230,10 @@ include 'includes/header.php';
             plugins: {
                 legend: {
                     position: 'bottom'
+                },
+                // Désactive les tooltips si c'est vide pour ne pas afficher "Aucun stagiaire: 1"
+                tooltip: {
+                    enabled: totalStagiaires > 0
                 }
             }
         }
