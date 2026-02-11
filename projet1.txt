@@ -136,3 +136,51 @@ Conseil d'expert : Actuellement, si "Simo" clique sur son nom dans la barre bleu
 
 4. Rappel sur ton erreur de logique actuelle
 N'oublie pas de corriger ton fichier login.php comme discuté. Ton interface montre que tu es sur login.php alors que tu es déjà connecté. Selon ton UML, une fois l'authentification réussie, l'utilisateur doit être redirigé vers son espace dédié (Dashboard) pour accéder à ses fonctions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Liste des modules restants au 11 / 02 / 2026
+
+
+1. Module Affectation & Encadrement (Priorité 1)C'est le lien entre l'admin, le stagiaire et l'encadreur.Assigner un Encadreur : L'admin choisit quel encadreur s'occupe de quel stagiaire.Assigner à un Projet : Rattacher le stagiaire à un projet spécifique (ex: "Refonte du site web").Objectif : Respecter la relation "Stagiaire ↔ Encadreur" de ton diagramme de classes.
+
+
+
+2. Module Gestion des Tâches (Le "Cœur" du stage)Ton diagramme montre que le stagiaire doit "Travailler sur des tâches".Création de tâches : L'encadreur crée des tâches (titre, description, date limite).Suivi d'avancement : Le stagiaire change le statut (À faire → En cours → Terminé).Correction d'erreurs : Possibilité pour l'encadreur de rejeter une tâche si elle est mal faite.
+
+
+
+
+
+3. Module Rapports & Documents (Livrables)Dépôt de rapport : Le stagiaire upload son rapport final en PDF.Validation du rapport : L'encadreur vérifie et valide le document. [cite: 2026-01-24]
+
+
+
+
+
+
+
+4. Module Fin de Stage (Le "Plus" professionnel)Génération de l'Attestation : Création automatique d'un PDF propre avec logo, nom, et dates de stage.Évaluation : Une petite note ou appréciation laissée par l'encadreur.Tableau Récapitulatif du Reste à FaireModuleActeurs concernésUtilité pour le rapport de stageAffectationAdminJustifie la gestion des ressources humaines.TâchesEncadreur / StagiaireProuve la "réalisation" mentionnée dans ton thème.RapportsStagiaire / EncadreurGère le cycle de vie complet du stage.AttestationAdminC'est le résultat final attendu par l'entreprise.Par quoi veux-tu commencer ? Je te suggère le Module Affectation (lier un stagiaire à un encadreur), car sans encadreur, on ne peut pas créer de tâches !
