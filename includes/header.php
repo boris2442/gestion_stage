@@ -211,6 +211,12 @@
                                 <span>Rapports</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin_incidents.php">
+                                <i class="fas fa-headset me-2"></i>
+                                <span>Signalements</span>
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">

@@ -25,7 +25,7 @@ $session_actuelle = $user['id_session_actuelle'];
 // 3. Récupérer l'état du rapport (S'il existe)
 // On récupère le dernier rapport déposé par ce stagiaire, peu importe la session
 $rapport_stmt = $pdo->prepare("SELECT status, commentaire_encadreur FROM rapports WHERE id_stagiaire = ? ORDER BY date_depot DESC LIMIT 1");
-$rapport_stmt->execute([$id_user]); 
+$rapport_stmt->execute([$id_user]);
 $mon_rapport = $rapport_stmt->fetch();
 
 // 4. Récupérer les tâches
@@ -36,6 +36,17 @@ $liste_taches = $taches_stmt->fetchAll();
 ?>
 
 <div class="container mt-4">
+    <?php if ($mon_rapport['status'] == 'valide'): ?>
+        <div class="alert alert-success d-flex justify-content-between align-items-center shadow-sm">
+            <div>
+                <h6 class="alert-heading fw-bold mb-1"><i class="fas fa-certificate me-2"></i> Rapport Validé !</h6>
+                <p class="mb-0 small">Félicitations, vous avez terminé votre stage avec succès.</p>
+            </div>
+            <a href="generer_attestation.php" class="btn btn-dark btn-sm fw-bold">
+                <i class="fas fa-file-pdf me-2"></i> Mon Attestation
+            </a>
+        </div>
+    <?php endif; ?>
     <div class="row mb-5">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
@@ -47,13 +58,13 @@ $liste_taches = $taches_stmt->fetchAll();
                             <a href="deposer_rapport.php" class="btn btn-primary btn-sm">Déposer maintenant</a>
                         </div>
                     <?php else: ?>
-                        <?php 
-                            $status_map = [
-                                'en_attente' => ['class' => 'warning', 'icon' => 'clock', 'text' => 'En cours d\'examen'],
-                                'valide' => ['class' => 'success', 'icon' => 'check-double', 'text' => 'Rapport Validé'],
-                                'a_corriger' => ['class' => 'danger', 'icon' => 'exclamation-triangle', 'text' => 'Corrections demandées']
-                            ];
-                            $cur = $status_map[$mon_rapport['status']];
+                        <?php
+                        $status_map = [
+                            'en_attente' => ['class' => 'warning', 'icon' => 'clock', 'text' => 'En cours d\'examen'],
+                            'valide' => ['class' => 'success', 'icon' => 'check-double', 'text' => 'Rapport Validé'],
+                            'a_corriger' => ['class' => 'danger', 'icon' => 'exclamation-triangle', 'text' => 'Corrections demandées']
+                        ];
+                        $cur = $status_map[$mon_rapport['status']];
                         ?>
                         <div class="alert alert-<?= $cur['class'] ?> mb-0">
                             <div class="d-flex justify-content-between align-items-center">
