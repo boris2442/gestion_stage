@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once 'config/db.php';
-include 'includes/header.php';
 
 // Sécurité Admin
 if ($_SESSION['role'] !== 'administrateur') {
@@ -19,14 +18,15 @@ $sql = "SELECT t.*,
         ORDER BY t.date_creation DESC";
 $stmt = $pdo->query($sql);
 $taches = $stmt->fetchAll();
+include 'includes/header.php';
 ?>
 <div class="container-fluid mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fas fa-clipboard-list me-2"></i> Suivi Global des Travaux</h2>
-<div class="">
-<a href="ajouter_tache.php"  class="btn btn-success btn-sm fw-bold">Ajouter une tache</a>
+        <div class="">
+            <a href="ajouter_tache.php" class="btn btn-success btn-sm fw-bold">Ajouter une tache</a>
 
-</div>
+        </div>
 
         <div class="text-muted">Total : <?= count($taches) ?> missions en cours</div>
     </div>

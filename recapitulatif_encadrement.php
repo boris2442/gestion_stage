@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once 'config/db.php';
-include 'includes/header.php';
 
 // Sécurité : Uniquement pour l'Admin
 if ($_SESSION['role'] !== 'administrateur') {
@@ -12,6 +11,7 @@ if ($_SESSION['role'] !== 'administrateur') {
 // 1. Récupérer tous les encadreurs
 $stmt = $pdo->query("SELECT id, nom, prenom, email FROM users WHERE role = 'encadreur' ORDER BY nom ASC");
 $encadreurs = $stmt->fetchAll();
+include 'includes/header.php';
 ?>
 
 <div class="container-fluid">

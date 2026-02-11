@@ -12,8 +12,8 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-<!-- <script src="assets/js/chart.min.js"></script> -->
- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- <script src="assets/js/chart.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -79,7 +79,25 @@
                         <li class="nav-item ms-lg-3"><a class="btn btn-outline-light btn-sm fw-bold" href="login.php">Connexion</a></li>
                         <li class="nav-item ms-lg-2"><a class="btn btn-warning btn-sm fw-bold text-dark" href="register.php">S'inscrire</a></li>
                     <?php else: ?>
+
                         <li class="nav-item"><span class="nav-link text-white-50 me-3">Salut, <?php echo $_SESSION['nom'] ?? 'Utilisateur'; ?></span></li>
+
+
+                        <?php
+                        if ($_SESSION['role'] === 'stagiaire'):
+                            //Afficher le role pour debugger
+                            echo "Role de l'utilisateur : " . $_SESSION['role'];
+                        ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'mes_taches.php') ? 'active' : '' ?>" href="mes_taches.php">
+                                    <i class="fas fa-tasks me-2 text-primary"></i> <strong>Mes Tâches</strong>
+                                </a>
+                            </li>
+                        <?php
+                        endif;
+                        ?>
+
+
 
 
                         <li class="nav-item"><a class="dropdown-item" href="editer_profil.php">
@@ -133,6 +151,9 @@
                                 <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                             </a>
                         </li>
+
+
+
                         <li class="nav-item">
                             <a class="nav-link" href="stagiaires.php">
                                 <i class="fas fa-users me-2"></i> Stagiaires
