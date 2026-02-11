@@ -2,7 +2,8 @@
 include 'includes/header.php';
 // Sécurité : Uniquement Encadreur ou Admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] == 'stagiaire') {
-    header('Location: index.php'); exit();
+    header('Location: index.php');
+    exit();
 }
 
 // Récupérer les stagiaires affectés à cet encadreur
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $desc = htmlspecialchars($_POST['description']);
 
     $sql = "INSERT INTO taches (id_stagiaire, titre, description, status) VALUES (?, ?, ?, 'a_faire')";
-    if($pdo->prepare($sql)->execute([$id_s, $titre, $desc])) {
+    if ($pdo->prepare($sql)->execute([$id_s, $titre, $desc])) {
         echo "<script>alert('Tâche assignée !');</script>";
     }
 }
@@ -34,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="mb-3">
                     <label class="form-label">Sélectionner le Stagiaire</label>
                     <select name="id_stagiaire" class="form-select" required>
-                        <?php foreach($mes_stagiaires as $s): ?>
+                        <?php foreach ($mes_stagiaires as $s): ?>
                             <option value="<?= $s['id'] ?>"><?= $s['nom'] ?> <?= $s['prenom'] ?></option>
                         <?php endforeach; ?>
                     </select>

@@ -1,33 +1,59 @@
 <?php
 session_start();
-include 'includes/header.php';
-include 'config/db.php';
-
-
+require_once 'config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// --- LOGIQUE D'EXTRACTION DES DONNÉES (SQL) ---
-// On ne récupère ces chiffres que pour l'admin pour ne pas alourdir le serveur
-if ($_SESSION['role'] == 'administrateur') {
-    $total_stagiaires = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'stagiaire'")->fetchColumn();
-    $total_demandes = $pdo->query("SELECT COUNT(*) FROM demandes WHERE status = 'en_attente'")->fetchColumn();
-    $taches_finies = $pdo->query("SELECT COUNT(*) FROM taches WHERE status = 'termine'")->fetchColumn();
+// --- INITIALISATION PAR DÉFAUT (Pour éviter les Warnings) ---
+$total_stagiaires = 0;
+$total_demandes = 0;
+$taches_finies = 0;
+$non_assignes = 0;
+$assignes = 0;
+$acad = 0;
+$pro = 0;
+$session_active = null;
 
-    // Données pour le graphique : Type de stage
+// --- CALCUL DES DONNÉES SI ADMIN ---
+if ($_SESSION['role'] == 'administrateur') {
+    // 1. Session Active
+    $stmt_active = $pdo->query("SELECT id, titre FROM sessions WHERE is_active = 1 LIMIT 1");
+    $session_active = $stmt_active->fetch();
+    $id_active = $session_active ? $session_active['id'] : 0;
+
+    // 2. Compteurs filtrés par Session
+    if ($id_active > 0) {
+        // Stagiaires actifs dans CETTE session
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role = 'stagiaire' AND id_session_actuelle = ?");
+        $stmt->execute([$id_active]);
+        $total_stagiaires = $stmt->fetchColumn();
+
+        // Stagiaires non assignés dans CETTE session
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role = 'stagiaire' AND id_session_actuelle = ? AND encadreur_id IS NULL");
+        $stmt->execute([$id_active]);
+        $non_assignes = $stmt->fetchColumn();
+
+        // Tâches terminées dans CETTE session
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM taches WHERE status = 'termine' AND id_session = ?");
+        $stmt->execute([$id_active]);
+        $taches_finies = $stmt->fetchColumn();
+    }
+
+    // 3. Compteurs Globaux (indépendants de la session)
+    $total_demandes = $pdo->query("SELECT COUNT(*) FROM demandes WHERE status = 'en_attente'")->fetchColumn();
+
+    // Stats pour le graphique (on peut garder global ou filtrer par session selon ton choix)
     $acad = $pdo->query("SELECT COUNT(*) FROM demandes WHERE type_stage = 'academique'")->fetchColumn();
     $pro = $pdo->query("SELECT COUNT(*) FROM demandes WHERE type_stage = 'professionnel'")->fetchColumn();
 
-    // --- AJOUT DANS LA LOGIQUE SQL ---
-    // Compter les stagiaires sans encadreur
-    $non_assignes = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'stagiaire' AND encadreur_id IS NULL")->fetchColumn();
     $assignes = $total_stagiaires - $non_assignes;
 }
-?>
 
+include 'includes/header.php';
+?>
 <div class="container-fluid">
 
     <?php if (isset($_SESSION['success'])): ?>
@@ -41,7 +67,13 @@ if ($_SESSION['role'] == 'administrateur') {
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Tableau de bord - RESOTEL SARL</h1>
-        <div class="badge bg-dark p-2">Session : <?php echo ucfirst($_SESSION['role']); ?></div>
+        <div class="d-flex align-items-center">
+            <span class="text-muted me-2 small">Promotion active :</span>
+            <div class="badge bg-primary p-2">
+                <i class="fas fa-layer-group me-1"></i>
+                <?= $session_active ? htmlspecialchars($session_active['titre']) : 'Aucune session active' ?>
+            </div>
+        </div>
     </div>
 
     <div class="alert alert-light border-0 shadow-sm mb-4">
@@ -160,7 +192,7 @@ if ($_SESSION['role'] == 'administrateur') {
         data: {
             labels: ['Académique', 'Professionnel'],
             datasets: [{
-                data: [<?= $acad ?>, <?= $pro ?>],
+                data: [<?= (int)$acad ?>, <?= (int)$pro ?>],
                 backgroundColor: ['#0d6efd', '#20c997'],
                 hoverOffset: 4
             }]
@@ -184,7 +216,7 @@ if ($_SESSION['role'] == 'administrateur') {
         data: {
             labels: ['Assignés', 'Non-Assignés'],
             datasets: [{
-                data: [<?= $assignes ?>, <?= $non_assignes ?>],
+                data: [<?= (int)$assignes ?>, <?= (int)$total_na ?>],
                 backgroundColor: ['#198754', '#dc3545'], // Vert et Rouge
                 hoverOffset: 4
             }]

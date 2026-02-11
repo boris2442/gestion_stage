@@ -24,6 +24,11 @@ foreach ($demandes as $d) {
     if ($d['type_stage'] == 'academique') $academiques++;
     else $professionnels++;
 }
+
+// --- AJOUT : Récupération de la session active pour information ---
+$stmt_sess = $pdo->query("SELECT id, titre FROM sessions WHERE is_active = 1 LIMIT 1");
+$session_active = $stmt_sess->fetch();
+
 ?>
 
 <div class="container-fluid">

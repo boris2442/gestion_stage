@@ -14,13 +14,18 @@ include 'includes/header.php';
 $id_stagiaire = $_SESSION['user_id'];
 
 // 2. Récupération des tâches
+// 2. Récupération des tâches de la SESSION ACTUELLE du stagiaire
+// On récupère d'abord l'id_session_actuelle de l'utilisateur (si pas déjà en session)
+$id_session_stagiaire = $_SESSION['id_session_actuelle'] ?? 0;
+
 $sql = "SELECT t.*, u.nom AS nom_encadreur, u.prenom AS prenom_encadreur 
         FROM taches t 
         JOIN users u ON t.id_encadreur = u.id 
-        WHERE t.id_stagiaire = ? 
+        WHERE t.id_stagiaire = ? AND t.id_session = ?
         ORDER BY t.status ASC, t.date_fin ASC";
+
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$id_stagiaire]);
+$stmt->execute([$id_stagiaire, $id_session_stagiaire]);
 $taches = $stmt->fetchAll();
 
 // 3. Calcul des statistiques pour le Dashboard
@@ -42,7 +47,7 @@ $pourcentage = ($total > 0) ? round(($realisees / $total) * 100) : 0;
             <p class="text-muted mb-4">
                 Bonjour ! Voici l'état d'avancement de vos missions.
             </p>
-            
+
             <div class="row text-center">
                 <div class="col-6 col-sm-4 mb-3">
                     <div class="p-3 border rounded bg-light shadow-sm">
@@ -84,10 +89,24 @@ $pourcentage = ($total > 0) ? round(($realisees / $total) * 100) : 0;
                 </div>
             </div>
         <?php else: ?>
-            <?php foreach ($taches as $t): ?>
+            <?php foreach ($taches as $t):
+                $deadline = strtotime($t['date_fin']);
+                $aujourdhui = time();
+                // Urgent si pas fini ET moins de 48h restantes
+                $urgent = ($t['status'] !== 'termine' && ($deadline - $aujourdhui) < 172800 && ($deadline - $aujourdhui) > 0);
+            ?>
                 <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm border-0 <?= $t['status'] == 'termine' ? 'bg-light text-muted' : 'border-start border-primary border-4' ?>">
+                    <div class="card h-100 shadow-sm border-0 <?= $t['status'] == 'termine' ? 'bg-light text-muted' : ($urgent ? 'border-start border-danger border-4' : 'border-start border-primary border-4') ?>">
+
                         <div class="card-body">
+                            <?php if ($urgent): ?>
+                                <div class="mb-2">
+                                    <small class="text-danger fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                        <i class="fas fa-exclamation-triangle me-1"></i> Échéance très proche !
+                                    </small>
+                                </div>
+                            <?php endif; ?>
+
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="card-title mb-0"><?= htmlspecialchars($t['titre']) ?></h5>
                                 <?php if ($t['status'] == 'a_faire'): ?>
@@ -102,7 +121,7 @@ $pourcentage = ($total > 0) ? round(($realisees / $total) * 100) : 0;
 
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    <i class="far fa-calendar-alt me-1"></i> Fin : <?= date('d/m/Y', strtotime($t['date_fin'])) ?>
+                                    <i class="far fa-calendar-alt me-1"></i> Fin : <?= date('d/m/Y', $deadline) ?>
                                 </small>
                                 <small class="text-muted">
                                     <i class="fas fa-user-tie me-1"></i> M. <?= htmlspecialchars($t['nom_encadreur']) ?>
@@ -111,15 +130,18 @@ $pourcentage = ($total > 0) ? round(($realisees / $total) * 100) : 0;
 
                             <?php if ($t['status'] == 'termine'): ?>
                                 <div class="mt-3 p-2 rounded bg-white border border-success text-center">
-                                    <small class="text-success fw-bold">Note : <?= ($t['note'] !== null) ? $t['note'] . "/20" : "Attente évaluation" ?></small>
+                                    <small class="text-success fw-bold">
+                                        Note : <?= ($t['note'] !== null) ? $t['note'] . "/20" : "Attente évaluation" ?>
+                                    </small>
                                 </div>
                             <?php else: ?>
                                 <div class="d-grid mt-3">
-                                    <a href="terminer_tache.php?id=<?= $t['id'] ?>" class="btn btn-sm btn-primary" onclick="return confirm('Confirmez-vous ?')">
-                                        Marquer comme terminé
+                                    <a href="terminer_tache.php?id=<?= $t['id'] ?>" class="btn btn-sm btn-primary shadow-sm" onclick="return confirm('Avez-vous réellement terminé cette mission ?')">
+                                        <i class="fas fa-check-circle me-1"></i> Marquer comme terminé
                                     </a>
                                 </div>
                             <?php endif; ?>
+
                         </div>
                     </div>
                 </div>
@@ -130,25 +152,29 @@ $pourcentage = ($total > 0) ? round(($realisees / $total) * 100) : 0;
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const ctx = document.getElementById('evolutionChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Réalisées', 'Restantes'],
-            datasets: [{
-                data: [<?= $realisees ?>, <?= $en_attente ?>],
-                backgroundColor: ['#198754', '#e9ecef'],
-                hoverOffset: 4,
-                borderWidth: 0
-            }]
-        },
-        options: {
-            cutout: '80%',
-            plugins: { legend: { display: false } }
-        }
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('evolutionChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Réalisées', 'Restantes'],
+                datasets: [{
+                    data: [<?= $realisees ?>, <?= $en_attente ?>],
+                    backgroundColor: ['#198754', '#e9ecef'],
+                    hoverOffset: 4,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '80%',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
     });
-});
 </script>
 
 <?php include 'includes/footer.php'; ?>

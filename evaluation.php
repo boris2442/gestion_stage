@@ -2,39 +2,45 @@
 session_start();
 require_once 'config/db.php';
 
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] == 'stagiaire') {
     header('Location: index.php');
     exit();
 }
 
-// 1. SQL Amélioré : On récupère les sessions ET le compte des tâches
-$sql = "SELECT s.*, u.nom, u.prenom,
-        (SELECT COUNT(*) FROM taches WHERE id_stagiaire = s.id_stagiaire) as total_taches,
-        (SELECT COUNT(*) FROM taches WHERE id_stagiaire = s.id_stagiaire AND status = 'termine') as taches_faites
-        FROM sessions s 
-        JOIN users u ON s.id_stagiaire = u.id 
-        WHERE s.id_encadreur = ? AND s.status = 'en_cours'";
+$id_encadreur = $_SESSION['user_id'];
+
+// 1. Récupérer la session active
+$stmt_sess = $pdo->query("SELECT id, titre FROM sessions WHERE is_active = 1 LIMIT 1");
+$session_active = $stmt_sess->fetch();
+$id_session_active = $session_active ? $session_active['id'] : 0;
+
+// 2. SQL Amélioré : On récupère les STAGIAIRES de la session active liés à cet encadreur
+$sql = "SELECT u.id, u.nom, u.prenom,
+        (SELECT COUNT(*) FROM taches WHERE id_stagiaire = u.id AND id_session = ?) as total_taches,
+        (SELECT COUNT(*) FROM taches WHERE id_stagiaire = u.id AND id_session = ? AND status = 'termine') as taches_faites
+        FROM users u 
+        WHERE u.encadreur_id = ? 
+        AND u.role = 'stagiaire' 
+        AND u.id_session_actuelle = ?";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$_SESSION['user_id']]);
-$sessions = $stmt->fetchAll();
-var_dump($sessions); // Debug : Affiche les données récupérées
-// 2. Traitement de la notation multiple
-// 2. Traitement de la notation multiple
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['evaluer'])) {
-    // On vérifie si "notes" existe pour éviter l'erreur "Undefined array key"
-    if (isset($_POST['notes']) && is_array($_POST['notes'])) {
-        foreach ($_POST['notes'] as $id_session => $note) {
-            // On ne traite que si une note a été saisie (pas vide)
-            if ($note !== "") {
-                $obs = isset($_POST['observations'][$id_session]) ? htmlspecialchars($_POST['observations'][$id_session]) : '';
+$stmt->execute([$id_session_active, $id_session_active, $id_encadreur, $id_session_active]);
+$stagiaires = $stmt->fetchAll();
 
-                $sql_update = "UPDATE sessions SET note = ?, observations = ?, status = 'termine' WHERE id = ?";
-                $pdo->prepare($sql_update)->execute([$note, $obs, $id_session]);
+// 3. Traitement de la notation
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['evaluer'])) {
+    if (isset($_POST['notes']) && is_array($_POST['notes'])) {
+        foreach ($_POST['notes'] as $id_stagiaire => $note) {
+            if ($note !== "") {
+                $obs = isset($_POST['observations'][$id_stagiaire]) ? htmlspecialchars($_POST['observations'][$id_stagiaire]) : '';
+
+                // On met à jour les notes dans la table users (ou une table dédiée)
+                // Ici, on considère que tu as des colonnes note et observations dans 'users'
+                $sql_update = "UPDATE users SET note_final = ?, observations = ? WHERE id = ?";
+                $pdo->prepare($sql_update)->execute([$note, $obs, $id_stagiaire]);
             }
         }
-        echo "<script>alert('Évaluations enregistrées avec succès !'); window.location='evaluation.php';</script>";
+        echo "<script>alert('Évaluations enregistrées !'); window.location='evaluation.php';</script>";
         exit();
     }
 }
@@ -42,9 +48,8 @@ include 'includes/header.php';
 ?>
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-star text-warning me-2"></i> Évaluation Groupée des Stagiaires</h4>
-        <span class="badge bg-info"><?= count($sessions) ?> stagiaires en cours</span>
+    <div class="alert alert-info border-0 shadow-sm">
+        <i class="fas fa-edit me-2"></i> Évaluation pour la session : <strong><?= htmlspecialchars($session_active['titre'] ?? 'Aucune') ?></strong>
     </div>
 
     <form method="POST">
@@ -54,47 +59,39 @@ include 'includes/header.php';
                     <thead class="table-light">
                         <tr>
                             <th>Stagiaire</th>
-                            <th>Performance (Tâches)</th>
+                            <th>Progression Session</th>
                             <th style="width: 150px;">Note /20</th>
                             <th>Observations</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($sessions as $s):
+                        <?php foreach ($stagiaires as $s):
                             $ratio = ($s['total_taches'] > 0) ? round(($s['taches_faites'] / $s['total_taches']) * 100) : 0;
                         ?>
                             <tr>
                                 <td>
-                                    <strong><?= $s['nom'] ?> <?= $s['prenom'] ?></strong><br>
-                                    <small class="text-muted"><?= $s['titre'] ?></small>
+                                    <strong><?= htmlspecialchars($s['nom'] . ' ' . $s['prenom']) ?></strong>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="progress flex-grow-1 me-2" style="height: 8px;">
                                             <div class="progress-bar bg-success" style="width: <?= $ratio ?>%"></div>
                                         </div>
-                                        <small class="fw-bold"><?= $s['taches_faites'] ?> / <?= $s['total_taches'] ?></small>
+                                        <small><?= $s['taches_faites'] ?>/<?= $s['total_taches'] ?></small>
                                     </div>
-                                    <small class="text-muted" style="font-size: 0.75rem;">Soit <?= $ratio ?>% de réussite</small>
                                 </td>
                                 <td>
-                                    <input type="number" name="notes[<?= $s['id'] ?>]" class="form-control form-control-sm" min="0" max="20" placeholder="Ex: 15">
+                                    <input type="number" name="notes[<?= $s['id'] ?>]" class="form-control form-control-sm" min="0" max="20">
                                 </td>
                                 <td>
-                                    <textarea name="observations[<?= $s['id'] ?>]" class="form-control form-control-sm" rows="1" placeholder="Commentaire..."></textarea>
+                                    <textarea name="observations[<?= $s['id'] ?>]" class="form-control form-control-sm" rows="1"></textarea>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
-            <div class="card-footer bg-white py-3">
-                <button type="submit" name="evaluer" class="btn btn-warning fw-bold shadow-sm">
-                    <i class="fas fa-save me-2"></i> Enregistrer toutes les notes
-                </button>
-            </div>
         </div>
     </form>
 </div>
-
 <?php include 'includes/footer.php'; ?>

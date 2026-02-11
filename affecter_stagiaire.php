@@ -2,7 +2,8 @@
 include 'includes/header.php';
 // Sécurité : Uniquement Admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'administrateur') {
-    header('Location: index.php'); exit();
+    header('Location: index.php');
+    exit();
 }
 
 // 1. On récupère les stagiaires et les encadreurs pour les menus déroulants
@@ -19,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sql = "INSERT INTO sessions (titre, date_debut, date_fin, id_stagiaire, id_encadreur, status) 
             VALUES ('Session de Stage', ?, ?, ?, ?, 'en_cours')";
     $stmt = $pdo->prepare($sql);
-    
-    if($stmt->execute([$debut, $fin, $id_s, $id_e])) {
+
+    if ($stmt->execute([$debut, $fin, $id_s, $id_e])) {
         echo "<script>alert('Affectation réussie !'); window.location.href='dashboard.php';</script>";
     }
 }
@@ -36,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="mb-3">
                     <label class="form-label">Choisir le Stagiaire</label>
                     <select name="id_stagiaire" class="form-select" required>
-                        <?php foreach($stagiaires as $s): ?>
+                        <?php foreach ($stagiaires as $s): ?>
                             <option value="<?= $s['id'] ?>"><?= $s['nom'] ?> <?= $s['prenom'] ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -45,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="mb-3">
                     <label class="form-label">Attribuer un Encadreur</label>
                     <select name="id_encadreur" class="form-select" required>
-                        <?php foreach($encadreurs as $e): ?>
+                        <?php foreach ($encadreurs as $e): ?>
                             <option value="<?= $e['id'] ?>"><?= $e['nom'] ?> <?= $e['prenom'] ?></option>
                         <?php endforeach; ?>
                     </select>

@@ -22,7 +22,20 @@ if (!$id) {
     exit();
 }
 
-$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? AND role = 'stagiaire'");
+// $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? AND role = 'stagiaire'");
+// $stmt->execute([$id]);
+// $s = $stmt->fetch();
+
+
+$stmt = $pdo->prepare("
+    SELECT s.*, 
+           e.nom AS nom_e, e.prenom AS prenom_e,
+           sess.titre, sess.date_debut, sess.date_fin
+    FROM users s 
+    LEFT JOIN users e ON s.encadreur_id = e.id 
+    LEFT JOIN sessions sess ON s.id_session_actuelle = sess.id
+    WHERE s.id = ? AND s.role = 'stagiaire'
+");
 $stmt->execute([$id]);
 $s = $stmt->fetch();
 
