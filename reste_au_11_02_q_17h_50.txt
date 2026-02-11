@@ -1,0 +1,64 @@
+1. Le Système de Rapports (Le livrable pédagogique)
+C'est la preuve du travail accompli. Dans ton diagramme, c'est l'interaction centrale entre le Stagiaire et l'Encadreur.
+
+Dépôt de rapport : Créer une interface pour que le stagiaire puisse uploader son fichier (PDF/Word).
+
+Gestion des fichiers : Gérer le stockage sécurisé sur le serveur et l'enregistrement du chemin en base de données.
+
+Validation par l'encadreur : Une vue permettant à l'encadreur de télécharger le rapport, de le lire, et de changer son statut (Ex: "Validé", "À corriger").
+
+2. Le Signalement de Problème (Support & Communication)
+Tu as inclus cette bulle pour le Stagiaire. C'est une excellente fonctionnalité pour montrer que tu gères l'expérience utilisateur (UX).
+
+Formulaire de ticket : Une page simple (Objet, Description) pour que le stagiaire alerte l'administration.
+
+Dashboard des alertes : Une vue côté Administrateur pour lister et traiter ces messages (marquer comme "Résolu").
+
+3. La Génération de l'Attestation (L'aboutissement)
+C'est le document que l'Administrateur télécharge à la fin de la session.
+
+Mise en place de FPDF/DomPDF : Intégration de la bibliothèque de génération PDF.
+
+Template dynamique : Créer le design de l'attestation qui récupère automatiquement le nom du stagiaire, les dates de la session active et le nom de l'encadreur.
+
+
+Page PHP à créer,Rôle principal,Acteur concerné
+deposer_rapport.php,Upload du fichier,Stagiaire
+valider_rapport.php,Correction et validation,Encadreur
+signaler_probleme.php,Envoi d'une alerte,Stagiaire
+liste_incidents.php,Lecture des alertes,Administrateur
+generer_pdf.php,Création de l'attestation,Administrateur
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Le Dépôt et la Validation du Rapport (Priorité n°1)
+C'est la fonctionnalité la plus complexe car elle implique la gestion de fichiers sur le serveur.
+
+Pourquoi ? C'est l'action qui lie le Stagiaire (Dépôt) et l'Encadreur (Validation). Tant que le rapport n'est pas validé, le stagiaire ne peut techniquement pas être "libéré" avec son attestation.
+
+Défi technique : Gérer les extensions autorisées (.pdf, .docx), limiter la taille des fichiers et sécuriser le dossier d'upload.
+
+2. Le Signalement de Problème (Priorité n°2)
+C'est ce qu'on appelle la gestion du "SAV" ou du support.
+
+Pourquoi ? C'est une fonctionnalité transversale. Elle est rapide à mettre en place et montre que ton application gère les imprévus.
+
+Défi technique : Créer un système de notifications ou un statut "Lu/Non lu" pour l'administrateur.
+
+3. L'Attestation de Stage PDF (Le bouquet final)
+Pourquoi ? C'est la récompense. C'est le module qui utilise toutes les données collectées (Nom, Session, Dates, Type de stage). On le garde pour la fin car c'est la "cerise sur le gâteau" qui clôture la démonstration de ton projet.
+
+Défi technique : Mise en page propre et gestion des caractères spéciaux (utf8_decode).
+
+Ma recommandation d'ingénieur :
+Commençons par le Dépôt du Rapport. C'est ce qui donne le plus de crédibilité à ton projet. Une application de stage sans dépôt de mémoire ou de rapport est souvent considérée comme incomplète.

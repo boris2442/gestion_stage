@@ -64,12 +64,30 @@ $pourcentage = ($total > 0) ? round(($realisees / $total) * 100) : 0;
             </div>
         </div>
 
-        <div class="col-md-5 text-center">
+        <!-- <div class="col-md-5 text-center">
             <div style="max-width: 180px; margin: 0 auto;">
                 <canvas id="evolutionChart"></canvas>
             </div>
             <div class="mt-2 fw-bold text-primary"><?= $pourcentage ?>% Accomplis</div>
+        </div> -->
+
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="p-3 border-0 rounded shadow-sm bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0"><i class="fas fa-file-upload me-2"></i> Rapport de stage</h5>
+                        <small class="opacity-75">Prêt à soumettre votre travail final ?</small>
+                    </div>
+                    <a href="deposer_rapport.php" class="btn btn-light btn-sm fw-bold text-primary">
+                        Déposer maintenant
+                    </a>
+                </div>
+            </div>
         </div>
+
+        <hr>
+
+
     </div>
 
     <hr>

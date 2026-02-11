@@ -210,14 +210,16 @@ include 'includes/header.php';
 
 
     // Graphique d'Assignation
+    // Graphique d'Assignation
     const ctx2 = document.getElementById('assignationChart').getContext('2d');
     new Chart(ctx2, {
         type: 'doughnut',
         data: {
             labels: ['Assignés', 'Non-Assignés'],
             datasets: [{
-                data: [<?= (int)$assignes ?>, <?= (int)$total_na ?>],
-                backgroundColor: ['#198754', '#dc3545'], // Vert et Rouge
+                // Correction ici : remplacez $total_na par $non_assignes
+                data: [<?= (int)$assignes ?>, <?= (int)$non_assignes ?>],
+                backgroundColor: ['#198754', '#dc3545'],
                 hoverOffset: 4
             }]
         },

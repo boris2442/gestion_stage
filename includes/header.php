@@ -205,6 +205,12 @@
                                 <span>Sessions</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gestion_rapports.php">
+                                <i class="fas fa-file-signature me-2"></i>
+                                <span>Rapports</span>
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">
