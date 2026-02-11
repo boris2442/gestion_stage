@@ -20,6 +20,11 @@ if ($_SESSION['role'] == 'administrateur') {
     // Données pour le graphique : Type de stage
     $acad = $pdo->query("SELECT COUNT(*) FROM demandes WHERE type_stage = 'academique'")->fetchColumn();
     $pro = $pdo->query("SELECT COUNT(*) FROM demandes WHERE type_stage = 'professionnel'")->fetchColumn();
+
+    // --- AJOUT DANS LA LOGIQUE SQL ---
+    // Compter les stagiaires sans encadreur
+    $non_assignes = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'stagiaire' AND encadreur_id IS NULL")->fetchColumn();
+    $assignes = $total_stagiaires - $non_assignes;
 }
 ?>
 
@@ -41,6 +46,23 @@ if ($_SESSION['role'] == 'administrateur') {
 
     <div class="alert alert-light border-0 shadow-sm mb-4">
         <h4>Ravi de vous revoir, <?php echo htmlspecialchars($_SESSION['nom']); ?> !</h4>
+        <?php if ($_SESSION['role'] == 'administrateur' && $non_assignes > 0): ?>
+
+            <div class="alert alert-danger border-0 shadow-sm d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+
+                    <strong>Attention :</strong> Il y a <strong><?= $non_assignes ?></strong> stagiaire(s) actif(s) sans encadreur assigné.
+
+                </div>
+
+                <a href="affectation_masse.php" class="btn btn-danger btn-sm">Affecter maintenant</a>
+
+            </div>
+
+        <?php endif; ?>
         <p class="mb-0 text-muted">Voici l'état actuel de la plateforme de gestion.</p>
     </div>
 
@@ -90,9 +112,18 @@ if ($_SESSION['role'] == 'administrateur') {
         <div class="row">
             <div class="col-md-7">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white"><strong>Répartition des Candidatures</strong></div>
+                    <div class="card-header bg-white"><strong>Statistiques Globales</strong></div>
                     <div class="card-body">
-                        <canvas id="stageChart" height="150"></canvas>
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <small class="text-muted d-block mb-2">Types de Stage</small>
+                                <canvas id="stageChart" height="200"></canvas>
+                            </div>
+                            <div class="col-6 text-center">
+                                <small class="text-muted d-block mb-2">Suivi Encadrement</small>
+                                <canvas id="assignationChart" height="200"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -121,7 +152,7 @@ if ($_SESSION['role'] == 'administrateur') {
     <?php endif; ?>
 </div>
 
-<script src="assets/js/chart.min.js"></script>
+
 <script>
     const ctx = document.getElementById('stageChart').getContext('2d');
     new Chart(ctx, {
@@ -131,6 +162,30 @@ if ($_SESSION['role'] == 'administrateur') {
             datasets: [{
                 data: [<?= $acad ?>, <?= $pro ?>],
                 backgroundColor: ['#0d6efd', '#20c997'],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+
+
+
+    // Graphique d'Assignation
+    const ctx2 = document.getElementById('assignationChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Assignés', 'Non-Assignés'],
+            datasets: [{
+                data: [<?= $assignes ?>, <?= $non_assignes ?>],
+                backgroundColor: ['#198754', '#dc3545'], // Vert et Rouge
                 hoverOffset: 4
             }]
         },

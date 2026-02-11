@@ -11,7 +11,18 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'administrateur' && $
 }
 
 // Récupération des users ayant le rôle 'stagiaire'
-$stmt = $pdo->query("SELECT * FROM users WHERE role = 'stagiaire' ORDER BY nom ASC");
+// $stmt = $pdo->query("SELECT * FROM users WHERE role = 'stagiaire' ORDER BY nom ASC");
+// $stagiaires = $stmt->fetchAll();
+
+
+
+// Requête avec jointure pour récupérer le nom de l'encadreur
+$sql = "SELECT s.*, e.nom AS nom_encadreur, e.prenom AS prenom_encadreur 
+        FROM users s 
+        LEFT JOIN users e ON s.encadreur_id = e.id 
+        WHERE s.role = 'stagiaire' 
+        ORDER BY s.nom ASC";
+$stmt = $pdo->query($sql);
 $stagiaires = $stmt->fetchAll();
 ?>
 
@@ -29,6 +40,7 @@ $stagiaires = $stmt->fetchAll();
                         <th>Nom & Prénom</th>
                         <th>Email / Tel</th>
                         <!-- <th>Niveau / Type</th> -->
+                        <th>Statut Encadrement</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -41,6 +53,20 @@ $stagiaires = $stmt->fetchAll();
                                 <span class="badge bg-info"><?= htmlspecialchars($s['niveau']) ?></span>
                                 <span class="badge bg-secondary"><?= ucfirst($s['type_stage']) ?></span>
                             </td> -->
+                            <td>
+                                <?php if ($s['encadreur_id']): ?>
+                                    <span class="text-success small fw-bold">
+                                        <i class="fas fa-user-check me-1"></i>
+                                        Encadré par M. <?= htmlspecialchars($s['nom_encadreur']) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <a href="affectation_masse.php" class="text-decoration-none">
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-exclamation-triangle me-1"></i> Non assigné
+                                        </span>
+                                    </a>
+                                <?php endif; ?>
+                            </td>
                             <td>
                                 <a href="profil_stagiaire.php?id=<?= $s['id'] ?>" class="btn btn-sm btn-outline-primary" title="Voir profil">
                                     <i class="fas fa-eye"></i>

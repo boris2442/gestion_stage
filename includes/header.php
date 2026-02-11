@@ -12,7 +12,8 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
+<!-- <script src="assets/js/chart.min.js"></script> -->
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -63,10 +64,7 @@
             <a class="navbar-brand fw-bold" href="index.php">
                 <img src="assets/img/logo_resotel.png" alt="Logo" style="width: 30px;" class="me-2">
                 RESOTEL SARL
-<?php
-                echo "Mon rôle actuel : " . ($_SESSION['role'] ?? 'NON DEFINI');
-// var_dump($_SESSION); // Décommente pour voir tout le contenu
-?>
+
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -154,8 +152,21 @@
                         </li>
 
 
-
-
+                        <?php if ($_SESSION['role'] === 'administrateur'): ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'affectation_masse.php') ? 'active' : '' ?>"
+                                    href="affectation_masse.php">
+                                    <i class="fas fa-users-cog me-2"></i>
+                                    <span>Affectation en Masse</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="recapitulatif_encadrement.php">
+                                <i class="fas fa-sitemap me-2"></i>
+                                <span>Vue d'ensemble</span>
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">

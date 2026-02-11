@@ -7,6 +7,13 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['administrateu
     header('Location: index.php');
     exit();
 }
+//recuperation des encadreur pour les affectation
+// À ajouter après la récupération du stagiaire $s
+$stmt_encadreurs = $pdo->query("SELECT id, nom, prenom FROM users WHERE role = 'encadreur' ORDER BY nom ASC");
+$encadreurs = $stmt_encadreurs->fetchAll();
+
+
+
 
 // 2. RÉCUPÉRATION DU STAGIAIRE
 $id = $_GET['id'] ?? null;
@@ -92,7 +99,7 @@ include 'includes/header.php';
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0">
+            <!-- <div class="card shadow-sm border-0">
                 <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-tasks me-2 text-warning"></i>Projets et Tâches</span>
                     <button class="btn btn-sm btn-primary">Assigner une tâche</button>
@@ -101,7 +108,39 @@ include 'includes/header.php';
                     <i class="fas fa-project-diagram fa-3x text-light mb-3"></i>
                     <p class="text-muted">Aucun projet ou tâche n'est rattaché à ce stagiaire pour le moment.</p>
                 </div>
+            </div> -->
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white fw-bold">
+                    <i class="fas fa-link me-2 text-success"></i> Affectation du stagiaire
+                </div>
+                <div class="card-body">
+                    <form action="assigner_encadreur.php" method="POST">
+                        <input type="hidden" name="id_stagiaire" value="<?= $s['id'] ?>">
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Choisir un Encadreur</label>
+                            <select name="id_encadreur" class="form-select" required>
+                                <option value="">-- Sélectionner l'encadreur --</option>
+                                <?php foreach ($encadreurs as $e): ?>
+                                    <option value="<?= $e['id'] ?>">
+                                        M./Mme <?= htmlspecialchars($e['nom'] . ' ' . $e['prenom']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-check-circle me-1"></i> Valider l'Affectation
+                        </button>
+                    </form>
+                </div>
             </div>
+
+
+
+
+
         </div>
     </div>
 </div>
