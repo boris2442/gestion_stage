@@ -155,6 +155,11 @@
 
 
                         <li class="nav-item">
+                            <a class="nav-link" href="evaluation.php">
+                                <i class="fas fa-star me-2"></i> Evaluations
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="stagiaires.php">
                                 <i class="fas fa-users me-2"></i> Stagiaires
                             </a>
@@ -192,6 +197,12 @@
                             <a class="nav-link" href="gestion_taches_admin.php">
                                 <i class="fas fa-tasks me-2"></i>
                                 <span>Taches</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="liste_sessions.php">
+                                <i class="fas fa-list me-2"></i>
+                                <span>Sessions</span>
                             </a>
                         </li>
 
