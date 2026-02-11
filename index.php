@@ -1,4 +1,7 @@
-<?php include 'includes/header.php'; ?>
+<?php
+session_start();
+
+include 'includes/header.php'; ?>
 
 <section class="bg-gradient-primary text-white py-5 shadow-lg position-relative overflow-hidden" style="background: linear-gradient(135deg, #0d6efd 0%, #00bfff 100%);">
 

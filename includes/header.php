@@ -63,6 +63,10 @@
             <a class="navbar-brand fw-bold" href="index.php">
                 <img src="assets/img/logo_resotel.png" alt="Logo" style="width: 30px;" class="me-2">
                 RESOTEL SARL
+<?php
+                echo "Mon rôle actuel : " . ($_SESSION['role'] ?? 'NON DEFINI');
+// var_dump($_SESSION); // Décommente pour voir tout le contenu
+?>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -134,6 +138,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="stagiaires.php">
                                 <i class="fas fa-users me-2"></i> Stagiaires
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="demandes_gestion.php">
+                                <i class="fas fa-users me-2"></i> Demandes
                             </a>
                         </li>
 
