@@ -8,7 +8,27 @@
                 <p class="text-muted mb-0">Rejoignez l'équipe de RESOTEL SARL en déposant votre dossier.</p>
             </div>
             <div class="card-body p-4">
+                <?php
+                include 'config/db.php';
+                // Récupération dynamique des valeurs de l'ENUM niveau_etude
+                $stmtNiveau = $pdo->query("SHOW COLUMNS FROM demandes LIKE 'niveau_etude'");
+                $rowNiveau = $stmtNiveau->fetch();
+                preg_match("/^enum\((.*)\)$/", $rowNiveau['Type'], $matches);
+                $niveaux = str_getcsv($matches[1], ',', "'");
+                ?>
                 <form action="postuler_process.php" method="POST" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label class="form-label">Niveau d'études actuel</label>
+                        <select name="niveau_etude" class="form-select" required>
+                            <option value="" disabled selected>Choisissez votre niveau...</option>
+                            <?php foreach ($niveaux as $n): ?>
+                                <option value="<?= $n ?>"><?= htmlspecialchars($n) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nom</label>

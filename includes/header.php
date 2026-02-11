@@ -122,7 +122,7 @@
                     <!-- CONTENU DU SIDEBAR DIRECTEMENT ICI -->
                     <ul class="nav flex-column p-3">
                         <li class="nav-item">
-                            <a class="nav-link" href="dashboard.php">
+                            <a class="nav-link" href="index.php">
                                 <i class="fas fa-home me-2"></i> Accueil
                             </a>
                         </li>

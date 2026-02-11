@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $telephone = htmlspecialchars($_POST['telephone']);
     $type_stage = $_POST['type_stage'];
     $cni = htmlspecialchars($_POST['cni']); 
-
+$niveau_etude = $_POST['niveau_etude']; // Nouvelle variable
     // 2. Gestion du dossier d'upload
     $target_dir = "uploads/cv/";
     if (!is_dir($target_dir)) {
@@ -40,13 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         move_uploaded_file($_FILES["lettre_file"]["tmp_name"], $target_dir . $new_lettre_name)
     ) {
         // Respect du diagramme de classe : Insertion en BDD
-        $sql = "INSERT INTO demandes (nom, prenom, email, telephone, type_stage, cv_path, lettre_motivation_path, cni, status) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'en_attente')";
+        $sql = "INSERT INTO demandes (nom, prenom, email, telephone, type_stage, niveau_etude, cv_path, lettre_motivation_path, cni, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'en_attente')";
 
         $stmt = $pdo->prepare($sql);
 
         try {
-            if ($stmt->execute([$nom, $prenom, $email, $telephone, $type_stage, $new_cv_name, $new_lettre_name, $cni])) {
+            if ($stmt->execute([$nom, $prenom, $email, $telephone, $type_stage,$niveau_etude, $new_cv_name, $new_lettre_name, $cni])) {
                 echo "<script>alert('Candidature envoyée avec succès !'); window.location.href='index.php';</script>";
             }
         } catch (PDOException $e) {
