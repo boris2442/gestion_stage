@@ -24,7 +24,7 @@ $session_active = $stmt_active->fetch();
 $id_active = $session_active ? $session_active['id'] : 0;
 
 // --- 2. CALCUL DES DONNÉES SI ADMIN ---
-if ($_SESSION['role'] == 'administrateur') {
+if ($_SESSION['role'] == 'administrateur' || $_SESSION['role'] == 'encadreur') {
 
     // Alerte si aucune session (visible uniquement par l'admin)
     if (!$session_active) {
@@ -114,7 +114,7 @@ include 'includes/header.php';
         <p class="mb-0 text-muted">Voici l'état actuel de la plateforme de gestion.</p>
     </div>
 
-    <?php if ($_SESSION['role'] == 'administrateur'): ?>
+    <?php if ($_SESSION['role'] == 'administrateur' || $_SESSION['role'] == 'encadreur'): ?>
         <div class="row mb-4">
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm bg-primary text-white">
@@ -181,7 +181,7 @@ include 'includes/header.php';
                     <div class="card-body">
                         <div class="d-grid gap-2">
                             <a href="demandes_gestion.php" class="btn btn-outline-primary text-start"><i class="fas fa-user-plus me-2"></i> Valider les nouveaux</a>
-                            <a href="affecter_stagiaire.php" class="btn btn-outline-dark text-start"><i class="fas fa-link me-2"></i> Créer une affectation</a>
+                            <!-- <a href="affecter_stagiaire.php" class="btn btn-outline-dark text-start"><i class="fas fa-link me-2"></i> Créer une affectation</a> -->
                         </div>
                     </div>
                 </div>

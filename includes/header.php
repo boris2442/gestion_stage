@@ -1,4 +1,8 @@
-
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -113,6 +117,11 @@
 
 
                             <li class="nav-item">
+                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>" href="index.php">
+                                    <i class="fas fa-home me-2"></i> Accueil
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : '' ?>" href="dashboard.php">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
@@ -126,55 +135,59 @@
                                 </li>
                             <?php endif; ?>
 
-                            <li class="nav-item">
-                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'evaluation.php') ? 'active' : '' ?>" href="evaluation.php">
-                                    <i class="fas fa-star me-2"></i> Evaluations
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'stagiaires.php') ? 'active' : '' ?>" href="stagiaires.php">
-                                    <i class="fas fa-users me-2"></i> Stagiaires
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'demandes_gestion.php') ? 'active' : '' ?>" href="demandes_gestion.php">
-                                    <i class="fas fa-envelope me-2"></i> Demandes
-                                </a>
-                            </li>
+                            <!-- Si le role est stagiaire on affiche pas -->
+                            <?php if ($_SESSION['role'] !== 'stagiaire'): ?>
 
-                            <?php if ($_SESSION['role'] === 'administrateur'): ?>
                                 <li class="nav-item">
-                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'affectation_masse.php') ? 'active' : '' ?>" href="affectation_masse.php">
-                                        <i class="fas fa-users-cog me-2"></i> Affectations
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'evaluation.php') ? 'active' : '' ?>" href="evaluation.php">
+                                        <i class="fas fa-star me-2"></i> Evaluations
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'stagiaires.php') ? 'active' : '' ?>" href="stagiaires.php">
+                                        <i class="fas fa-users me-2"></i> Stagiaires
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'demandes_gestion.php') ? 'active' : '' ?>" href="demandes_gestion.php">
+                                        <i class="fas fa-envelope me-2"></i> Demandes
+                                    </a>
+                                </li>
+
+                                <?php if ($_SESSION['role'] === 'administrateur'): ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'affectation_masse.php') ? 'active' : '' ?>" href="affectation_masse.php">
+                                            <i class="fas fa-users-cog me-2"></i> Affectations
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+
+                                <li class="nav-item">
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'recapitulatif_encadrement.php') ? 'active' : '' ?>" href="recapitulatif_encadrement.php">
+                                        <i class="fas fa-sitemap me-2"></i> Vue d'ensemble
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'gestion_taches_admin.php') ? 'active' : '' ?>" href="gestion_taches_admin.php">
+                                        <i class="fas fa-tasks me-2"></i> Tâches
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'liste_sessions.php') ? 'active' : '' ?>" href="liste_sessions.php">
+                                        <i class="fas fa-list me-2"></i> Sessions
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'gestion_rapports.php') ? 'active' : '' ?>" href="gestion_rapports.php">
+                                        <i class="fas fa-file-signature me-2"></i> Rapports
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'admin_incidents.php') ? 'active' : '' ?>" href="admin_incidents.php">
+                                        <i class="fas fa-headset me-2"></i> Signalements
                                     </a>
                                 </li>
                             <?php endif; ?>
-
-                            <li class="nav-item">
-                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'recapitulatif_encadrement.php') ? 'active' : '' ?>" href="recapitulatif_encadrement.php">
-                                    <i class="fas fa-sitemap me-2"></i> Vue d'ensemble
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'gestion_taches_admin.php') ? 'active' : '' ?>" href="gestion_taches_admin.php">
-                                    <i class="fas fa-tasks me-2"></i> Tâches
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'liste_sessions.php') ? 'active' : '' ?>" href="liste_sessions.php">
-                                    <i class="fas fa-list me-2"></i> Sessions
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'gestion_rapports.php') ? 'active' : '' ?>" href="gestion_rapports.php">
-                                    <i class="fas fa-file-signature me-2"></i> Rapports
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'admin_incidents.php') ? 'active' : '' ?>" href="admin_incidents.php">
-                                    <i class="fas fa-headset me-2"></i> Signalements
-                                </a>
-                            </li>
 
                             <li class="nav-item  border-top pt-2">
                                 <a class="nav-link text-danger" href="logout.php">
