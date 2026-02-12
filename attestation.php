@@ -6,22 +6,46 @@ require 'vendor/autoload.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'stagiaire') {
+// if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'stagiaire') {
+//     die("Accès refusé.");
+// }
+
+// $id_user = $_SESSION['user_id'];
+
+// 1. PROTECTION ÉLARGIE
+// On autorise stagiaire, administrateur et encadreur
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['stagiaire', 'administrateur', 'encadreur'])) {
     die("Accès refusé.");
 }
 
-$id_user = $_SESSION['user_id'];
+// 2. RÉCUPÉRATION DE L'ID (Soit depuis l'URL, soit depuis la session)
+// Si un admin/encadreur veut voir l'attestation d'un stagiaire précis : attestation.php?id=XX
+if (in_array($_SESSION['role'], ['administrateur', 'encadreur']) && isset($_GET['id'])) {
+    $id_user = intval($_GET['id']);
+} else {
+    // Si c'est le stagiaire lui-même
+    $id_user = $_SESSION['user_id'];
+}
+
+// $sql = "SELECT u.nom, u.prenom, s.titre as promo, s.date_debut, s.date_fin,
+//         (SELECT AVG(note) FROM taches WHERE id_stagiaire = u.id AND note IS NOT NULL) as moyenne_calculee
+//         FROM users u 
+//         JOIN sessions s ON u.id_session_actuelle = s.id 
+//         JOIN rapports r ON r.id_stagiaire = u.id
+//         WHERE u.id = ? AND r.status = 'valide' 
+//         LIMIT 1";
 
 $sql = "SELECT u.nom, u.prenom, s.titre as promo, s.date_debut, s.date_fin,
         (SELECT AVG(note) FROM taches WHERE id_stagiaire = u.id AND note IS NOT NULL) as moyenne_calculee
         FROM users u 
         JOIN sessions s ON u.id_session_actuelle = s.id 
-        JOIN rapports r ON r.id_stagiaire = u.id
-        WHERE u.id = ? AND r.status = 'valide' 
+        LEFT JOIN rapports r ON r.id_stagiaire = u.id
+        WHERE u.id = ? AND (r.status = 'valide' OR ? != 'stagiaire') 
         LIMIT 1";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$id_user]);
+// $stmt->execute([$id_user]);
+$stmt->execute([$id_user, $_SESSION['role']]);
 $data = $stmt->fetch();
 
 if (!$data) {

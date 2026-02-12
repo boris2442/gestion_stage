@@ -71,7 +71,7 @@ include 'includes/header.php';
                         <a href="mailto:<?= $s['email'] ?>" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-envelope me-2"></i>Envoyer un mail
                         </a>
-                        <a href="generer_attestation.php?id=<?= $s['id'] ?>" class="btn btn-success btn-sm">
+                        <a href="attestation.php?id=<?= $s['id'] ?>" class="btn btn-success btn-sm" target="_blank">
                             <i class="fas fa-file-pdf me-2"></i>Générer l'Attestation
                         </a>
                     </div>
@@ -128,7 +128,7 @@ include 'includes/header.php';
                     <i class="fas fa-link me-2 text-success"></i> Affectation du stagiaire
                 </div>
                 <div class="card-body">
-                    <form action="assigner_encadreur.php" method="POST">
+                    <!-- <form action="affecter_encadreur.php" method="POST">
                         <input type="hidden" name="id_stagiaire" value="<?= $s['id'] ?>">
 
                         <div class="mb-3">
@@ -146,7 +146,7 @@ include 'includes/header.php';
                         <button type="submit" class="btn btn-success btn-sm w-100">
                             <i class="fas fa-check-circle me-1"></i> Valider l'Affectation
                         </button>
-                    </form>
+                    </form> -->
                 </div>
             </div>
 

@@ -176,7 +176,7 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item mt-3 border-top pt-2">
+                            <li class="nav-item  border-top pt-2">
                                 <a class="nav-link text-danger" href="logout.php">
                                     <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
                                 </a>

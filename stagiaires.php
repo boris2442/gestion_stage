@@ -106,7 +106,7 @@ include 'includes/header.php';
                             <a href="profil_stagiaire.php?id=<?= $s['id'] ?>" class="btn btn-sm btn-outline-primary" title="Voir profil">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="generer_attestation.php?id=<?= $s['id'] ?>" class="btn btn-sm btn-success" title="Générer Attestation">
+                            <a href="attestation.php?id=<?= $s['id'] ?>" class="btn btn-sm btn-success" title="Générer Attestation"  target="_blank">
                                 <i class="fas fa-file-pdf"></i>
                             </a>
                         </td>
