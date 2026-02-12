@@ -1,12 +1,4 @@
-<!-- </main>
-</div>
-</div>
 
-<footer class="footer py-3 bg-white border-top mt-auto">
-    <div class="container text-center">
-        <span class="text-muted">© 2026 RESOTEL SARL - Système de Gestion des Stagiaires.</span>
-    </div>
-</footer> -->
 </main>
 </div>
 </div>

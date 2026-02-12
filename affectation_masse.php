@@ -34,7 +34,7 @@ $stagiaires->execute([$session_active['id']]);
 $liste_stagiaires = $stagiaires->fetchAll();
 
 // 3. Récupérer les encadreurs
-//$encadreurs = $pdo->query("SELECT id, nom, prenom FROM users WHERE role = 'encadreur'")->fetchAll();
+
 $encadreurs = $pdo->query("SELECT id, nom, prenom FROM users WHERE role = 'encadreur'")->fetchAll();
 include 'includes/header.php';
 ?>
