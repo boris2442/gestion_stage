@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once 'config/db.php';
+
 
 // Sécurité : Uniquement l'Admin
 if ($_SESSION['role'] !== 'administrateur') {

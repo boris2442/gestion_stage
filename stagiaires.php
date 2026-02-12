@@ -1,7 +1,6 @@
 <?php
 // stagiaires.php
 session_start();
-include 'includes/header.php';
 include 'config/db.php';
 
 // Sécurité : Uniquement Admin et Encadreur peuvent voir la liste
@@ -43,6 +42,7 @@ if ($session_id) {
     $stmt->execute();
 }
 $stagiaires = $stmt->fetchAll();
+include 'includes/header.php';
 ?>
 
 <div class="container-fluid">

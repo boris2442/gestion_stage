@@ -1,5 +1,6 @@
 <?php 
 session_start();
+require_once 'config/db.php';
 // Si déjà connecté, redirection immédiate
 if (isset($_SESSION['user_id'])) { header('Location: dashboard.php'); exit(); }
 

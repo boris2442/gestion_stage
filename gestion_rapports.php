@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'config/db.php';
-include 'includes/header.php';
+
 
 // Sécurité : Seul l'encadreur ou l'admin peut voir cette page
 if (!in_array($_SESSION['role'], ['encadreur', 'administrateur'])) {
@@ -52,6 +52,8 @@ foreach ($rapports as $rap) {
     elseif ($rap['status'] == 'valide') $valides++;
     elseif ($rap['status'] == 'a_corriger') $corrections++;
 }
+
+include 'includes/header.php';
 ?>
 
 <div class="container mt-4">

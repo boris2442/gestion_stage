@@ -1,5 +1,6 @@
 <?php
-include 'includes/header.php';
+session_start();
+require_once 'config/db.php';
 // Sécurité : Uniquement Admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'administrateur') {
     header('Location: index.php');
@@ -25,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "<script>alert('Affectation réussie !'); window.location.href='dashboard.php';</script>";
     }
 }
+
+include 'includes/header.php';
 ?>
 
 <div class="container mt-4">

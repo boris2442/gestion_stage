@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -90,7 +88,6 @@
                         <li class="nav-item ms-lg-3"><a class="btn btn-outline-light btn-sm fw-bold" href="register.php">Inscription</a></li>
                     <?php else: ?>
                         <li class="nav-item"><span class="nav-link text-white-50 me-3">Salut, <?= $_SESSION['nom'] ?? 'Utilisateur'; ?></span></li>
-                        <li class="nav-item"><a class="btn btn-outline-light btn-sm fw-bold" href="dashboard.php"><i class="fas fa-sign-out-alt"></i> dashboard</a></li>
                         <li class="nav-item"><a class="btn btn-danger btn-sm fw-bold" href="logout.php"><i class="fas fa-sign-out-alt"></i> Quitter</a></li>
                     <?php endif; ?>
                 </ul>
