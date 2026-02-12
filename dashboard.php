@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// --- INITIALISATION PAR DÉFAUT (Pour éviter les Warnings) ---
+// --- INITIALISATION PAR DÉFAUT ---
 $total_stagiaires = 0;
 $total_demandes = 0;
 $taches_finies = 0;
@@ -17,39 +17,49 @@ $acad = 0;
 $pro = 0;
 $session_active = null;
 
-// --- CALCUL DES DONNÉES SI ADMIN ---
-if ($_SESSION['role'] == 'administrateur') {
-    // 1. Session Active
-    $stmt_active = $pdo->query("SELECT id, titre FROM sessions WHERE is_active = 1 LIMIT 1");
-    $session_active = $stmt_active->fetch();
-    $id_active = $session_active ? $session_active['id'] : 0;
+// --- 1. SESSION ACTIVE (POUR TOUS LES RÔLES) ---
+// On sort cette requête du "if admin" pour que l'encadreur la voit aussi
+$stmt_active = $pdo->query("SELECT id, titre FROM sessions WHERE is_active = 1 LIMIT 1");
+$session_active = $stmt_active->fetch();
+$id_active = $session_active ? $session_active['id'] : 0;
 
-    // 2. Compteurs filtrés par Session
+// --- 2. CALCUL DES DONNÉES SI ADMIN ---
+if ($_SESSION['role'] == 'administrateur') {
+
+    // Alerte si aucune session (visible uniquement par l'admin)
+    if (!$session_active) {
+        echo "<div class='alert alert-warning m-3'><i class='fas fa-exclamation-circle'></i> <strong>Attention :</strong> Aucune session de stage n'est active. <a href='gestion_sessions.php'>Activer une session ici</a></div>";
+    }
+
     if ($id_active > 0) {
         // Stagiaires actifs dans CETTE session
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role = 'stagiaire' AND id_session_actuelle = ?");
         $stmt->execute([$id_active]);
         $total_stagiaires = $stmt->fetchColumn();
 
-        // Stagiaires non assignés dans CETTE session
+        // Stagiaires non assignés
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role = 'stagiaire' AND id_session_actuelle = ? AND encadreur_id IS NULL");
         $stmt->execute([$id_active]);
         $non_assignes = $stmt->fetchColumn();
 
-        // Tâches terminées dans CETTE session
+        // Tâches terminées
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM taches WHERE status = 'termine' AND id_session = ?");
         $stmt->execute([$id_active]);
         $taches_finies = $stmt->fetchColumn();
     }
 
-    // 3. Compteurs Globaux (indépendants de la session)
     $total_demandes = $pdo->query("SELECT COUNT(*) FROM demandes WHERE status = 'en_attente'")->fetchColumn();
-
-    // Stats pour le graphique (on peut garder global ou filtrer par session selon ton choix)
     $acad = $pdo->query("SELECT COUNT(*) FROM demandes WHERE type_stage = 'academique'")->fetchColumn();
     $pro = $pdo->query("SELECT COUNT(*) FROM demandes WHERE type_stage = 'professionnel'")->fetchColumn();
-
     $assignes = $total_stagiaires - $non_assignes;
+}
+
+// --- 3. CALCUL DES DONNÉES SI ENCADREUR (Optionnel) ---
+if ($_SESSION['role'] == 'encadreur' && $id_active > 0) {
+    // Si tu veux que l'encadreur voit ses propres stats
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE encadreur_id = ? AND id_session_actuelle = ?");
+    $stmt->execute([$_SESSION['user_id'], $id_active]);
+    $mes_stagiaires = $stmt->fetchColumn();
 }
 
 include 'includes/header.php';
@@ -69,10 +79,16 @@ include 'includes/header.php';
         <h1 class="h2">Tableau de bord - RESOTEL SARL</h1>
         <div class="d-flex align-items-center">
             <span class="text-muted me-2 small">Promotion active :</span>
-            <div class="badge bg-primary p-2">
-                <i class="fas fa-layer-group me-1"></i>
-                <?= $session_active ? htmlspecialchars($session_active['titre']) : 'Aucune session active' ?>
-            </div>
+            <?php if ($session_active): ?>
+                <div class="badge bg-success p-2 shadow-sm">
+                    <i class="fas fa-check-circle me-1"></i>
+                    <?= htmlspecialchars($session_active['titre']) ?>
+                </div>
+            <?php else: ?>
+                <a href="creer_session.php" class="badge bg-danger p-2 text-decoration-none shadow-sm">
+                    <i class="fas fa-plus-circle me-1"></i> Activer une session
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 

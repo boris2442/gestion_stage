@@ -62,3 +62,29 @@ Défi technique : Mise en page propre et gestion des caractères spéciaux (utf8
 
 Ma recommandation d'ingénieur :
 Commençons par le Dépôt du Rapport. C'est ce qui donne le plus de crédibilité à ton projet. Une application de stage sans dépôt de mémoire ou de rapport est souvent considérée comme incomplète.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module,Fichier(s),État
+Authentification,"login.php, logout.php",✅ OK
+Affectation,"affectation_masse.php, traitement.php",✅ OK (Corrigé)
+Missions,"assigner_tache.php, mes_taches.php",✅ OK
+Rapports,"deposer_rapport.php, valider_rapport.php",⚠️ À finaliser
+Documents,generer_attestation.php,⚠️ À finaliser
+Support,signaler_incident.php,❌ À faire

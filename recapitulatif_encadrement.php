@@ -8,88 +8,84 @@ if ($_SESSION['role'] !== 'administrateur') {
     exit();
 }
 
-// 1. Récupérer tous les encadreurs
-// $stmt = $pdo->query("SELECT id, nom, prenom, email FROM users WHERE role = 'encadreur' ORDER BY nom ASC");
-// $encadreurs = $stmt->fetchAll();
+// 1. Récupérer d'abord TOUS les encadreurs (indispensable pour la boucle plus bas)
+$stmt = $pdo->query("SELECT id, nom, prenom, email FROM users WHERE role = 'encadreur' ORDER BY nom ASC");
+$encadreurs = $stmt->fetchAll();
 
-
-$stmt_s = $pdo->prepare("
-    SELECT u.nom, u.prenom, u.niveau_etude 
-    FROM users u
-    JOIN sessions s ON u.id_session_actuelle = s.id
-    WHERE u.encadreur_id = ? 
-    AND u.role = 'stagiaire' 
-    AND s.is_active = 1
-");
-$stmt_s->execute([$e['id']]);
-$mes_stagiaires = $stmt_s->fetchAll();
+// On inclut le header ici
 include 'includes/header.php';
 ?>
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-sitemap me-2 text-primary"></i> Récapitulatif de l'Encadrement</h2>
-        <a href="affectation_masse.php" class="btn btn-outline-primary btn-sm">
-            <i class="fas fa-plus me-1"></i> Nouvelle Affectation
-        </a>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4 pt-3">
+    <h2><i class="fas fa-sitemap me-2 text-primary"></i> Récapitulatif de l'Encadrement</h2>
+    <a href="affectation_masse.php" class="btn btn-outline-primary btn-sm">
+        <i class="fas fa-plus me-1"></i> Nouvelle Affectation
+    </a>
+</div>
 
-    <div class="row">
-        <?php if (empty($encadreurs)): ?>
-            <div class="col-12">
-                <div class="alert alert-info">Aucun encadreur n'est enregistré dans le système.</div>
-            </div>
-        <?php endif; ?>
+<div class="row">
+    <?php if (empty($encadreurs)): ?>
+        <div class="col-12">
+            <div class="alert alert-info shadow-sm">Aucun encadreur n'est enregistré dans le système.</div>
+        </div>
+    <?php endif; ?>
 
-        <?php foreach ($encadreurs as $e): ?>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white py-3 d-flex align-items-center">
-                        <div class="rounded-circle bg-primary text-white p-2 me-3">
-                            <i class="fas fa-user-tie fa-lg"></i>
-                        </div>
-                        <div>
-                            <h6 class="mb-0 fw-bold"><?= htmlspecialchars($e['nom'] . ' ' . $e['prenom']) ?></h6>
-                            <small class="text-muted"><?= htmlspecialchars($e['email']) ?></small>
-                        </div>
+    <?php foreach ($encadreurs as $e): ?>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 d-flex align-items-center">
+                    <div class="rounded-circle bg-primary text-white p-2 me-3" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user-tie fa-lg"></i>
                     </div>
-
-                    <div class="card-body">
-                        <p class="text-uppercase small fw-bold text-secondary border-bottom pb-2">Stagiaires suivis :</p>
-
-                        <?php
-                        // Sous-requête pour récupérer les stagiaires de CET encadreur
-                        $stmt_s = $pdo->prepare("SELECT nom, prenom, niveau_etude FROM users WHERE encadreur_id = ? AND role = 'stagiaire'");
-                        $stmt_s->execute([$e['id']]);
-                        $mes_stagiaires = $stmt_s->fetchAll();
-
-                        if (count($mes_stagiaires) > 0): ?>
-                            <ul class="list-group list-group-flush">
-                                <?php foreach ($mes_stagiaires as $st): ?>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-0">
-                                        <span><i class="fas fa-user-graduate me-2 text-info small"></i><?= htmlspecialchars($st['nom'] . ' ' . $st['prenom']) ?></span>
-                                        <span class="badge rounded-pill bg-light text-dark border"><?= $st['niveau_etude'] ?></span>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                        <?php else: ?>
-                            <div class="text-center py-3">
-                                <span class="badge bg-light text-muted fw-normal">Aucun stagiaire assigné</span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="card-footer bg-light border-0 d-flex justify-content-between align-items-center">
-                        <?php $nb = count($mes_stagiaires); ?>
-                        <small class="text-muted">Capacité d'encadrement</small>
-                        <span class="badge <?= $nb > 5 ? 'bg-warning' : 'bg-primary' ?> shadow-sm">
-                            <?= $nb ?> Stagiaire(s)
-                        </span>
+                    <div>
+                        <h6 class="mb-0 fw-bold"><?= htmlspecialchars($e['nom'] . ' ' . $e['prenom']) ?></h6>
+                        <small class="text-muted"><?= htmlspecialchars($e['email']) ?></small>
                     </div>
                 </div>
+
+                <div class="card-body">
+                    <p class="text-uppercase small fw-bold text-secondary border-bottom pb-2">Stagiaires suivis (Promotion active) :</p>
+
+                    <?php
+                    // 2. On récupère les stagiaires de CET encadreur ($e['id'])
+                    // J'ai ajouté la jointure avec 'sessions' pour ne voir que les stagiaires de la promotion active
+                    $stmt_s = $pdo->prepare("
+                        SELECT u.nom, u.prenom, u.niveau_etude 
+                        FROM users u
+                        JOIN sessions s ON u.id_session_actuelle = s.id
+                        WHERE u.encadreur_id = ? 
+                        AND u.role = 'stagiaire' 
+                        AND s.is_active = 1
+                    ");
+                    $stmt_s->execute([$e['id']]);
+                    $mes_stagiaires = $stmt_s->fetchAll();
+
+                    if (count($mes_stagiaires) > 0): ?>
+                        <ul class="list-group list-group-flush">
+                            <?php foreach ($mes_stagiaires as $st): ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-0">
+                                    <span><i class="fas fa-user-graduate me-2 text-info small"></i><?= htmlspecialchars($st['nom'] . ' ' . $st['prenom']) ?></span>
+                               <span class="badge rounded-pill bg-light text-dark border"><?= htmlspecialchars($st['niveau_etude'] ?? '') ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <div class="text-center py-3">
+                            <span class="badge bg-light text-muted fw-normal">Aucun stagiaire assigné</span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="card-footer bg-light border-0 d-flex justify-content-between align-items-center">
+                    <?php $nb = count($mes_stagiaires); ?>
+                    <small class="text-muted">Charge actuelle</small>
+                    <span class="badge <?= $nb > 4 ? 'bg-danger' : ($nb > 2 ? 'bg-warning' : 'bg-success') ?> shadow-sm">
+                        <?= $nb ?> Stagiaire(s)
+                    </span>
+                </div>
             </div>
-        <?php endforeach; ?>
-    </div>
+        </div>
+    <?php endforeach; ?>
 </div>
 
 <?php include 'includes/footer.php'; ?>

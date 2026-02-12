@@ -2,89 +2,93 @@
 session_start();
 require_once 'config/db.php';
 
-
-// Sécurité : Seul l'admin accède à cette page
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'administrateur') {
+// Sécurité : Uniquement l'Admin
+if ($_SESSION['role'] !== 'administrateur') {
     header('Location: index.php');
     exit();
 }
 
-// ACTION : Mise à jour du statut d'un incident
-if (isset($_GET['action']) && isset($_GET['id'])) {
-    $id_id = $_GET['id'];
-    $nouveau_statut = ($_GET['action'] == 'resoudre') ? 'resolu' : 'en_cours';
-
-    $update = $pdo->prepare("UPDATE incidents SET status = ? WHERE id = ?");
-    $update->execute([$nouveau_statut, $id_id]);
-    header('Location: admin_incidents.php?msg=statut_mis_a_jour');
+// Action : Marquer comme résolu
+if (isset($_GET['action']) && $_GET['action'] == 'resoudre') {
+    $id_inc = $_GET['id'];
+    $stmt = $pdo->prepare("UPDATE incidents SET status = 'resolu' WHERE id = ?");
+    $stmt->execute([$id_inc]);
+    header('Location: admin_incidents.php?msg=Incidents résolu');
+    exit();
 }
 
-// RÉCUPÉRATION : Tous les incidents avec les infos du stagiaire
+// Récupérer les incidents avec les noms des stagiaires
 $sql = "SELECT i.*, u.nom, u.prenom 
         FROM incidents i 
         JOIN users u ON i.id_stagiaire = u.id 
-        ORDER BY i.status ASC, i.date_signalement DESC";
+        ORDER BY i.date_signalement DESC";
 $incidents = $pdo->query($sql)->fetchAll();
+
 include 'includes/header.php';
 ?>
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-headset text-danger me-2"></i> Gestion des Signalements</h2>
-        <span class="badge bg-dark"><?= count($incidents) ?> Ticket(s) au total</span>
+        <h2><i class="fas fa-exclamation-triangle text-danger me-2"></i> Gestion des Incidents</h2>
+        <span class="badge bg-dark"><?= count($incidents) ?> signalement(s) au total</span>
     </div>
 
-    <?php if (empty($incidents)): ?>
-        <div class="alert alert-info text-center py-5 shadow-sm">
-            <i class="fas fa-check-circle fa-3x mb-3"></i>
-            <p class="mb-0">Aucun problème signalé par les stagiaires pour le moment. Tout va bien !</p>
-        </div>
-    <?php else: ?>
-        <div class="table-responsive">
-            <table class="table table-hover bg-white shadow-sm rounded overflow-hidden">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Date</th>
-                        <th>Stagiaire</th>
-                        <th>Sujet</th>
-                        <th>Message</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody style="vertical-align: middle;">
-                    <?php foreach ($incidents as $inc): ?>
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
                         <tr>
-                            <td class="small"><?= date('d/m/Y H:i', strtotime($inc['date_signalement'])) ?></td>
-                            <td><strong><?= htmlspecialchars($inc['prenom'] . ' ' . $inc['nom']) ?></strong></td>
-                            <td><span class="badge bg-info text-dark"><?= htmlspecialchars($inc['sujet']) ?></span></td>
-                            <td style="max-width: 300px;"><small><?= nl2br(htmlspecialchars($inc['message'])) ?></small></td>
-                            <td>
-                                <?php
-                                $color = ($inc['status'] == 'resolu') ? 'success' : (($inc['status'] == 'en_cours') ? 'warning' : 'danger');
-                                $label = ($inc['status'] == 'resolu') ? 'Résolu' : (($inc['status'] == 'en_cours') ? 'En cours' : 'Ouvert');
-                                ?>
-                                <span class="badge bg-<?= $color ?> px-3 py-2"><?= $label ?></span>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    <?php if ($inc['status'] !== 'en_cours' && $inc['status'] !== 'resolu'): ?>
-                                        <a href="admin_incidents.php?action=traiter&id=<?= $inc['id'] ?>" class="btn btn-sm btn-warning">Traiter</a>
-                                    <?php endif; ?>
-
-                                    <?php if ($inc['status'] !== 'resolu'): ?>
-                                        <a href="admin_incidents.php?action=resoudre&id=<?= $inc['id'] ?>" class="btn btn-sm btn-success">Régler</a>
-                                    <?php else: ?>
-                                        <button class="btn btn-sm btn-outline-secondary" disabled><i class="fas fa-check-double"></i></button>
-                                    <?php endif; ?>
-                                </div>
-                            </td>
+                            <th>Date</th>
+                            <th>Stagiaire</th>
+                            <th>Sujet</th>
+                            <th>Message</th>
+                            <th>Statut</th>
+                            <th class="text-end">Actions</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($incidents)): ?>
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">Aucun incident signalé pour le moment.</td>
+                            </tr>
+                        <?php endif; ?>
+
+                        <?php foreach ($incidents as $inc): ?>
+                            <tr>
+                                <td class="small"><?= date('d/m/Y H:i', strtotime($inc['date_signalement'])) ?></td>
+                                <td>
+                                    <span class="fw-bold"><?= htmlspecialchars($inc['nom'] . ' ' . $inc['prenom']) ?></span>
+                                </td>
+                                <td><span class="badge bg-info text-dark"><?= htmlspecialchars($inc['sujet']) ?></span></td>
+                                <td class="text-truncate" style="max-width: 250px;">
+                                    <?= htmlspecialchars($inc['message']) ?>
+                                </td>
+                                <td>
+                                    <?php if ($inc['status'] == 'ouvert'): ?>
+                                        <span class="badge bg-danger">En attente</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-success">Résolu</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-end">
+                                    <?php if ($inc['status'] == 'ouvert'): ?>
+                                        <a href="admin_incidents.php?action=resoudre&id=<?= $inc['id'] ?>" 
+                                           class="btn btn-sm btn-outline-success" 
+                                           onclick="return confirm('Marquer ce problème comme réglé ?')">
+                                            <i class="fas fa-check"></i> Résoudre
+                                        </a>
+                                    <?php else: ?>
+                                        <button class="btn btn-sm btn-light" disabled><i class="fas fa-check-double"></i> Terminé</button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    <?php endif; ?>
+    </div>
 </div>
 
 <?php include 'includes/footer.php'; ?>

@@ -1,5 +1,7 @@
 <?php
-include 'includes/header.php';
+
+session_start();
+require_once 'config/db.php';
 if ($_SESSION['role'] !== 'stagiaire') {
     header('Location: index.php');
     exit();
@@ -33,10 +35,11 @@ $sql = "SELECT * FROM taches
 $taches_stmt = $pdo->prepare($sql);
 $taches_stmt->execute([$id_user, $session_actuelle]);
 $liste_taches = $taches_stmt->fetchAll();
+include 'includes/header.php';
 ?>
 
 <div class="container mt-4">
-    
+
     <div class="row mb-5">
         <div class="col-12">
             <?php if (!$mon_rapport): ?>

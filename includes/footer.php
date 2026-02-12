@@ -1,4 +1,4 @@
-</main>
+<!-- </main>
 </div>
 </div>
 
@@ -6,8 +6,15 @@
     <div class="container text-center">
         <span class="text-muted">© 2026 RESOTEL SARL - Système de Gestion des Stagiaires.</span>
     </div>
+</footer> -->
+</main>
+</div>
+</div>
+<footer class="footer py-3 bg-white border-top mt-auto">
+    <div class="container text-center">
+        <span class="text-muted">© 2026 RESOTEL SARL - Système de Gestion des Stagiaires.</span>
+    </div>
 </footer>
-
 
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
@@ -54,7 +61,23 @@
     });
 </script>
 
+<script>
+    $(document).ready(function() {
+        // Gestion de la Sidebar Mobile
+        $('#sidebarCollapse, #overlay').on('click', function() {
+            $('#sidebar').toggleClass('active');
+            $('#overlay').toggleClass('active');
+        });
 
+        // Fermeture auto sur mobile après clic
+        $('.sidebar .nav-link').on('click', function() {
+            if (window.innerWidth < 768) {
+                $('#sidebar').removeClass('active');
+                $('#overlay').removeClass('active');
+            }
+        });
+    });
+</script>
 </body>
 
 </html>

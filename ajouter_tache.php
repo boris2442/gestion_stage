@@ -19,14 +19,37 @@ if (!$session_active) {
 }
 
 // 1. Récupérer uniquement les stagiaires de cet encadreur QUI sont dans la session active
-$sql = "SELECT id, nom, prenom FROM users 
-        WHERE encadreur_id = ? 
-        AND role = 'stagiaire' 
-        AND id_session_actuelle = ?"; // Filtre crucial
+// $sql = "SELECT id, nom, prenom FROM users 
+//         WHERE encadreur_id = ? 
+//         AND role = 'stagiaire' 
+//         AND id_session_actuelle = ?"; // Filtre crucial
+
+// $stmt = $pdo->prepare($sql);
+// $stmt->execute([$id_encadreur, $session_active['id']]);
+// $mes_stagiaires = $stmt->fetchAll();
+
+
+
+
+// On récupère TOUS les stagiaires de cet encadreur, 
+// en faisant une jointure pour afficher le nom de leur session
+$sql = "SELECT u.id, u.nom, u.prenom, s.titre as nom_session 
+        FROM users u 
+        LEFT JOIN sessions s ON u.id_session_actuelle = s.id 
+        WHERE u.encadreur_id = ? 
+        AND u.role = 'stagiaire'";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$id_encadreur, $session_active['id']]);
+$stmt->execute([$id_encadreur]);
 $mes_stagiaires = $stmt->fetchAll();
+echo "Mon ID encadreur est : " . $id_encadreur . "<br>";
+echo "Nombre de stagiaires trouvés : " . count($mes_stagiaires);
+//die(); // Décommente ça pour arrêter l'affichage ici et lire le résultat
+
+
+
+
+
 
 // 2. Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -76,7 +99,10 @@ include 'includes/header.php';
                                 <select name="id_stagiaire" class="form-select" required>
                                     <option value="">--- Sélectionnez un stagiaire ---</option>
                                     <?php foreach ($mes_stagiaires as $s): ?>
-                                        <option value="<?= $s['id'] ?>"><?= htmlspecialchars($s['nom'] . ' ' . $s['prenom']) ?></option>
+                                        <option value="<?= $s['id'] ?>">
+                                            <?= htmlspecialchars($s['nom'] . ' ' . $s['prenom']) ?>
+                                            (<?= htmlspecialchars($s['nom_session'] ?? 'Sans session') ?>)
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>

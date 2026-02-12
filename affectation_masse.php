@@ -8,7 +8,7 @@ if ($_SESSION['role'] !== 'administrateur') {
     exit();
 }
 
-// --- NOUVEAU : Récupérer la session active ---
+// 1. Récupérer la session active
 $stmt = $pdo->query("SELECT id, titre FROM sessions WHERE is_active = 1 LIMIT 1");
 $session_active = $stmt->fetch();
 
@@ -16,25 +16,32 @@ if (!$session_active) {
     die("<div class='alert alert-danger m-5'>Erreur : Aucune session n'est activée. <a href='liste_sessions.php'>Activez une session ici</a> avant d'affecter des stagiaires.</div>");
 }
 
-// 1. Récupérer les stagiaires qui n'ont pas encore d'ID de session (ou qui ne sont pas dans la session active)
-// On ajoute id_session_actuelle dans la requête
+// 2. LA REQUÊTE CORRIGÉE :
+// On prend les stagiaires qui :
+// - N'ont pas la bonne session (id_session_actuelle IS NULL OR != ?)
+// - OU qui ont la bonne session mais PAS d'encadreur (encadreur_id IS NULL OR 0)
 $sql_stagiaires = "SELECT id, nom, prenom, niveau_etude FROM users 
                    WHERE role = 'stagiaire' 
-                   AND (id_session_actuelle IS NULL OR id_session_actuelle != ?)";
+                   AND (
+                       id_session_actuelle IS NULL 
+                       OR id_session_actuelle != ? 
+                       OR encadreur_id IS NULL 
+                       OR encadreur_id = 0
+                   )";
+
 $stagiaires = $pdo->prepare($sql_stagiaires);
 $stagiaires->execute([$session_active['id']]);
 $liste_stagiaires = $stagiaires->fetchAll();
 
-// 2. Récupérer les encadreurs
+// 3. Récupérer les encadreurs
+//$encadreurs = $pdo->query("SELECT id, nom, prenom FROM users WHERE role = 'encadreur'")->fetchAll();
 $encadreurs = $pdo->query("SELECT id, nom, prenom FROM users WHERE role = 'encadreur'")->fetchAll();
-
 include 'includes/header.php';
 ?>
 
 <div class="container-fluid">
     <div class="alert alert-info border-0 shadow-sm d-flex justify-content-between align-items-center">
-        <span><i class="fas fa-info-circle me-2"></i> Affectation pour la session active : <strong><?= htmlspecialchars($session_active['titre']) ?></strong></span>
-        <span class="badge bg-primary">ID Session: <?= $session_active['id'] ?></span>
+        <span><i class="fas fa-info-circle me-2"></i> Session cible : <strong><?= htmlspecialchars($session_active['titre']) ?></strong></span>
     </div>
 
     <h2 class="mb-4"><i class="fas fa-users-cog me-2"></i> Affectation en Masse</h2>
@@ -46,7 +53,7 @@ include 'includes/header.php';
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white fw-bold text-primary">
-                        Sélectionner les stagiaires (<?= count($liste_stagiaires) ?> en attente)
+                        Stagiaires en attente d'encadreur (<?= count($liste_stagiaires) ?>)
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-hover mb-0">
@@ -76,9 +83,6 @@ include 'includes/header.php';
             <div class="col-md-4">
                 <div class="card shadow-sm sticky-top" style="top: 20px;">
                     <div class="card-body">
-                        <label class="form-label fw-bold text-danger">Action de l'ingénieur :</label>
-                        <p class="small text-muted">Les stagiaires sélectionnés seront liés à l'encadreur ET à la session active.</p>
-                        
                         <label class="form-label fw-bold">Assigner à l'encadreur :</label>
                         <select name="id_encadreur" class="form-select mb-3" required>
                             <option value="">-- Choisir --</option>
@@ -95,8 +99,8 @@ include 'includes/header.php';
         </div>
     </form>
 </div>
+
 <script>
-    // Script pour tout cocher d'un coup
     document.getElementById('checkAll').onclick = function() {
         let checkboxes = document.getElementsByClassName('checkItem');
         for (let checkbox of checkboxes) {
@@ -104,3 +108,5 @@ include 'includes/header.php';
         }
     }
 </script>
+
+<?php include 'includes/footer.php'; ?>

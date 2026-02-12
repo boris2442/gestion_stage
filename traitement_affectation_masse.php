@@ -4,22 +4,29 @@ require_once 'config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ids_stagiaires'])) {
     $id_encadreur = $_POST['id_encadreur'];
-    $ids = $_POST['ids_stagiaires']; // C'est un tableau d'IDs
+    $id_session = $_POST['id_session']; // On récupère l'ID de session envoyé par le formulaire
+    $ids = $_POST['ids_stagiaires'];
 
-    // Création d'une chaîne de points d'interrogation pour le SQL (ex: ?, ?, ?)
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
-    // On prépare la requête SQL "UPDATE users SET encadreur_id = X WHERE id IN (1, 2, 3...)"
-    $sql = "UPDATE users SET encadreur_id = ? WHERE id IN ($placeholders) AND role = 'stagiaire'";
+    // MISE À JOUR : On change l'encadreur ET la session actuelle
+    $sql = "UPDATE users 
+            SET encadreur_id = ?, id_session_actuelle = ? 
+            WHERE id IN ($placeholders) AND role = 'stagiaire'";
 
     $stmt = $pdo->prepare($sql);
 
-    // On fusionne l'ID de l'encadreur avec le tableau des IDs des stagiaires pour l'exécution
-    $params = array_merge([$id_encadreur], $ids);
+    // On fusionne l'encadreur, la session, puis la liste des IDs
+    $params = array_merge([$id_encadreur, $id_session], $ids);
 
     if ($stmt->execute($params)) {
-        header("Location: stagiaires.php?success=bulk_assigned");
+        $_SESSION['success'] = "Affectation réussie pour " . count($ids) . " stagiaire(s).";
+        header("Location: dashboard.php"); // Redirige vers le dashboard pour voir le résultat
+        exit();
     } else {
-        echo "Une erreur est survenue.";
+        echo "Une erreur technique est survenue.";
     }
+} else {
+    header("Location: affectation_masse.php");
+    exit();
 }

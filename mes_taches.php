@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'config/db.php';
-include 'includes/header.php';
+
 
 if ($_SESSION['role'] !== 'stagiaire') {
     header('Location: index.php');
@@ -33,6 +33,7 @@ $sql = "SELECT * FROM taches WHERE id_stagiaire = ? AND id_session = ? ORDER BY 
 $taches_stmt = $pdo->prepare($sql);
 $taches_stmt->execute([$id_user, $session_actuelle]);
 $liste_taches = $taches_stmt->fetchAll();
+include 'includes/header.php';
 ?>
 
 <div class="container mt-4">
@@ -42,7 +43,7 @@ $liste_taches = $taches_stmt->fetchAll();
                 <h6 class="alert-heading fw-bold mb-1"><i class="fas fa-certificate me-2"></i> Rapport Validé !</h6>
                 <p class="mb-0 small">Félicitations, vous avez terminé votre stage avec succès.</p>
             </div>
-            <a href="attestation.php" class="btn btn-dark btn-sm fw-bold">
+            <a href="attestation.php" class="btn btn-dark btn-sm fw-bold" target="_blank">
                 <i class="fas fa-file-pdf me-2"></i> Mon Attestation
             </a>
         </div>
@@ -86,7 +87,16 @@ $liste_taches = $taches_stmt->fetchAll();
             </div>
         </div>
     </div>
-
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <div class="p-3 bg-light rounded shadow-sm border">
+                <span class="text-muted me-2 small">Un problème technique ou besoin d'aide ?</span>
+                <a href="signaler_incident.php" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-exclamation-triangle me-1"></i> Signaler un incident
+                </a>
+            </div>
+        </div>
+    </div>
     <h3 class="mb-4"><i class="fas fa-tasks me-2"></i> Ma To-Do List</h3>
     <div class="row">
         <?php foreach ($liste_taches as $t): ?>
