@@ -177,6 +177,15 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <i class="fas fa-list me-2"></i> Sessions
                                     </a>
                                 </li>
+
+
+                                <li class="nav-item">
+                                    <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'users.php') ? 'active' : '' ?>" href="users.php">
+                                        <i class="fas fa-users me-2"></i> Users
+                                    </a>
+                                </li>
+
+
                                 <li class="nav-item">
                                     <a class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'gestion_rapports.php') ? 'active' : '' ?>" href="gestion_rapports.php">
                                         <i class="fas fa-file-signature me-2"></i> Rapports

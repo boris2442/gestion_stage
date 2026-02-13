@@ -1,5 +1,6 @@
 <?php
-
+session_start();
+require_once 'config/db.php';
 
 // Sécurité : Uniquement l'Admin
 if ($_SESSION['role'] !== 'administrateur') {
@@ -72,9 +73,9 @@ include 'includes/header.php';
                                 </td>
                                 <td class="text-end">
                                     <?php if ($inc['status'] == 'ouvert'): ?>
-                                        <a href="admin_incidents.php?action=resoudre&id=<?= $inc['id'] ?>" 
-                                           class="btn btn-sm btn-outline-success" 
-                                           onclick="return confirm('Marquer ce problème comme réglé ?')">
+                                        <a href="admin_incidents.php?action=resoudre&id=<?= $inc['id'] ?>"
+                                            class="btn btn-sm btn-outline-success"
+                                            onclick="return confirm('Marquer ce problème comme réglé ?')">
                                             <i class="fas fa-check"></i> Résoudre
                                         </a>
                                     <?php else: ?>
