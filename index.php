@@ -38,9 +38,9 @@ include 'includes/header.php'; ?>
                         <a href="login.php" class="btn btn-primary btn-lg px-4 me-md-2 shadow-lg fw-bold border-0">
                             <i class="fas fa-sign-in-alt me-2"></i>Connexion
                         </a>
-                        <a href="register.php" class="btn btn-outline-light btn-lg px-4 shadow-sm border-2">
+                        <!-- <a href="register.php" class="btn btn-outline-light btn-lg px-4 shadow-sm border-2">
                             <i class="fas fa-user-plus me-2"></i>S'inscrire
-                        </a>
+                        </a> -->
                     <?php
                     endif;
                     ?>

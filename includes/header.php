@@ -91,7 +91,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     <?php if (!isset($_SESSION['user_id'])): ?>
 
                         <li class="nav-item ms-lg-3"><a class="btn btn-outline-light btn-sm fw-bold" href="login.php">Connexion</a></li>
-                        <li class="nav-item ms-lg-3"><a class="btn btn-outline-light btn-sm fw-bold" href="register.php">Inscription</a></li>
+                        <!-- <li class="nav-item ms-lg-3"><a class="btn btn-outline-light btn-sm fw-bold" href="register.php">Inscription</a></li> -->
                     <?php else: ?>
                         <li class="nav-item"><span class="nav-link text-white-50 me-3">Salut, <?= $_SESSION['nom'] ?? 'Utilisateur'; ?></span></li>
                         <li class="nav-item"><a class="btn btn-outline-light btn-sm fw-bold" href="dashboard.php"><i class="fas fa-sign-out-alt"></i> dashboard</a></li>
